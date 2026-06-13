@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>해운대_나눔과행복병원 실습 평가서</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Malgun Gothic', -apple-system, sans-serif; background: #f5f7fa; min-height: 100vh; }
+    
+    .header {
+      background: #4a6cf7;
+      padding: 24px 20px;
+      text-align: center;
+      color: white;
+    }
+    .header h1 { font-size: 22px; margin-bottom: 4px; }
+    .header p { font-size: 13px; opacity: 0.85; }
+    
+    .container { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
+    
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 6px;
+    }
+    
+    .required { color: #e74c3c; margin-left: 2px; }
+    
+    .hospital-info {
+      background: #f8f9fa;
+      border-left: 4px solid #4a6cf7;
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .hospital-info h3 { font-size: 15px; margin-bottom: 12px; color: #2c3e50; }
+    .hospital-info p { font-size: 13px; color: #34495e; margin-bottom: 6px; }
+    .hospital-info strong { color: #4a6cf7; }
+    
+    .scoring-info {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .scoring-info h4 { font-size: 14px; margin-bottom: 10px; color: #4338ca; }
+    .scoring-info ul { list-style: disc; padding-left: 20px; font-size: 13px; color: #4338ca; }
+    .scoring-info li { margin-bottom: 4px; }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #4a6cf7;
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    
+    .eval-section {
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .eval-section h3 { font-size: 16px; color: #2c3e50; margin-bottom: 4px; }
+    .eval-section .section-desc {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .checklist { margin-bottom: 20px; }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .checklist-item:hover { background: #f8f9fa; }
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      accent-color: #4a6cf7;
+      cursor: pointer;
+    }
+    .checklist-item label {
+      font-size: 14px;
+      color: #34495e;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .score-display {
+      background: #f8f9fa;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .score-display .score-label { font-size: 13px; color: #7f8c8d; }
+    .score-display .score-value { font-size: 24px; font-weight: 700; color: #4a6cf7; }
+    
+    .submit-area { margin-top: 24px; text-align: center; }
+    .btn-submit {
+      background: #4a6cf7;
+      color: white;
+      border: none;
+      padding: 14px 48px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-submit:hover { background: #3b5de7; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; transform: none; }
+    
+    .status-msg {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+    }
+    .status-msg.show { display: block; }
+    .status-msg.success { background: #d4edda; color: #155724; }
+    .status-msg.error { background: #f8d7da; color: #721c24; }
+    .status-msg.info { background: #d1ecf1; color: #0c5460; }
+    
+    .total-score-card {
+      background: linear-gradient(135deg, #4a6cf7, #6366f1);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .total-score-card .total-label { font-size: 14px; opacity: 0.85; margin-bottom: 4px; }
+    .total-score-card .total-value { font-size: 36px; font-weight: 700; }
+    .total-score-card .total-max { font-size: 14px; opacity: 0.7; }
+
+    .tab-nav {
+      display: flex;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .tab-nav button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: white;
+      font-size: 14px;
+      font-weight: 600;
+      color: #7f8c8d;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-nav button.active { background: #4a6cf7; color: white; }
+    .tab-nav button:hover:not(.active) { background: #f0f4ff; color: #4a6cf7; }
+
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+
+    .admin-section { margin-bottom: 20px; }
+    .admin-section h4 { font-size: 14px; color: #2c3e50; margin-bottom: 12px; }
+    
+    .inline-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .inline-form input, .inline-form select {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      flex: 1;
+    }
+    .inline-form input:focus, .inline-form select:focus {
+      outline: none;
+      border-color: #4a6cf7;
+    }
+    
+    .btn-sm {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-add { background: #27ae60; color: white; }
+    .btn-add:hover { background: #219a52; }
+    .btn-del { background: #e74c3c; color: white; }
+    .btn-del:hover { background: #c0392b; }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-edit:hover { background: #d68910; }
+    .btn-blue { background: #4a6cf7; color: white; }
+    .btn-blue:hover { background: #3b5de7; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tag-item {
+      background: #e8f4fd;
+      border: 1px solid #bee5eb;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-item .tag-remove {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tag-item .tag-remove:hover { background: #c0392b; }
+
+    .school-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .school-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .school-card-header h5 { font-size: 15px; color: #2c3e50; }
+
+    .result-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+    .result-table th, .result-table td { padding: 8px 10px; border: 1px solid #e0e0e0; text-align: center; }
+    .result-table th { background: #4a6cf7; color: white; font-weight: 600; font-size: 11px; }
+    .result-table tr:nth-child(even) { background: #f8f9fa; }
+    .table-wrap { overflow-x: auto; }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-row select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .info-box {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #856404;
+      margin-bottom: 12px;
+    }
+    .info-box code {
+      background: #ffeeba;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .semester-badge {
+      display: inline-block;
+      background: #e8f4fd;
+      color: #2980b9;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 12px; }
+      .card { padding: 16px; }
+      .header h1 { font-size: 18px; }
+      .inline-form { flex-direction: column; }
+      .tab-nav button { font-size: 12px; padding: 12px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>해운대_나눔과행복병원 실습 평가서</h1>
+    <p>재활치료 1팀</p>
+  </div>
+
+  <div class="container">
+    <!-- 탭 네비게이션 -->
+    <div class="tab-nav">
+      <button class="active" onclick="switchTab('eval')">평가 입력</button>
+      <button onclick="switchTab('admin')">관리자</button>
+    </div>
+
+    <!-- ===== 평가 입력 탭 ===== -->
+    <div id="tab-eval" class="tab-page active">
+      <div class="card">
+        <p style="font-size:14px; color:#34495e; line-height:1.8;">본 평가는 실습 학생의 성실성과 전공 이해도, 소통 능력 등을 종합적으로 평가하는 데 목적이 있습니다. 선생님들의 공정하고 세심한 평가는 학생들이 임상을 바르게 이해하고 성장하는 데 중요한 밑거름이 됩니다. 작성해주신 소중한 기록은 향후 우리 팀의 실습 지도 체계와 교육 프로그램을 개선하는 데에도 적극 활용될 예정이오니, 지켜보신 모습을 바탕으로 신중하게 작성해 주시기 바랍니다.</p>
+      </div>
+
+      <!-- 평가자 + 분기/학교/학생 선택 -->
+      <div class="card">
+        <div class="form-group">
+          <label>평가자 이름 <span class="required">*</span></label>
+          <input type="text" id="evaluator-name" placeholder="평가자(선생님) 이름을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label>분기 선택 <span class="required">*</span></label>
+          <select id="select-semester" onchange="onSemesterChange()">
+            <option value="">-- 분기를 선택하세요 --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>학교 선택 <span class="required">*</span></label>
+          <select id="select-school" onchange="onSchoolChange()" disabled>
+            <option value="">-- 먼저 분기를 선택하세요 --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>학생 선택 <span class="required">*</span></label>
+          <select id="select-student" disabled>
+            <option value="">-- 먼저 학교를 선택하세요 --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 주간평가 (학교에 따라 자동 표시/숨김) -->
+      <div class="card" id="weekly-card" style="display:none;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <span class="semester-badge" style="background:#d4edda; color:#155724;">주간평가 해당 학교</span>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label>주간평가 - 간단하게 한줄 부탁드립니다. <span class="required">*</span></label>
+          <p style="font-size:12px; color:#7f8c8d; margin-bottom:8px;">예시) 새로운 업무를 담당하게 되면 적극적으로 습득하려는 자세를 보임</p>
+          <textarea id="weekly-comment" placeholder="주간평가 코멘트를 입력하세요"></textarea>
+        </div>
+      </div>
+
+      <!-- 1. 가치와 방향의 적합성 -->
+      <div class="card">
+        <div class="eval-section" data-section="1">
+          <h3>1. 가치와 방향의 적합성</h3>
+          <p class="section-desc">병원의 가치와 방향에 대한 공감여부와 이에 따른 실습 과정에서 참여의 적극성</p>
+          <div class="checklist">
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s1-c1" onchange="updateScore(1)">
+              <label for="s1-c1">실습 기관의 역할과 기능을 이해하고 있었다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s1-c2" onchange="updateScore(1)">
+              <label for="s1-c2">실습생으로서 자신의 역할과 한계를 인식하고 행동하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s1-c3" onchange="updateScore(1)">
+              <label for="s1-c3">기관의 운영 방식에 맞추어 성실하게 실습에 임하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s1-c4" onchange="updateScore(1)">
+              <label for="s1-c4">지시된 업무 외에도 배우려는 적극적인 태도를 보였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s1-c5" onchange="updateScore(1)">
+              <label for="s1-c5">실습 전반에 걸쳐 책임감 있게 행동하였다</label>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-label">환산 점수</span>
+            <span class="score-value" id="score-1">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 실습태도 -->
+      <div class="card">
+        <div class="eval-section" data-section="2">
+          <h3>2. 실습태도</h3>
+          <p class="section-desc">용모단정 · 실습복장 · 실습준비 · 참여자 및 선생님 대응태도</p>
+          <div class="checklist">
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s2-c1" onchange="updateScore(2)">
+              <label for="s2-c1">실습 복장 및 용모가 단정하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s2-c2" onchange="updateScore(2)">
+              <label for="s2-c2">실습 전 필요한 준비를 스스로 하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s2-c3" onchange="updateScore(2)">
+              <label for="s2-c3">지각·무단이탈 없이 성실히 참여하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s2-c4" onchange="updateScore(2)">
+              <label for="s2-c4">지도자 및 선생님에게 예의 바르게 응대하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s2-c5" onchange="updateScore(2)">
+              <label for="s2-c5">피드백을 긍정적으로 수용하였다</label>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-label">환산 점수</span>
+            <span class="score-value" id="score-2">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 규칙준수 -->
+      <div class="card">
+        <div class="eval-section" data-section="3">
+          <h3>3. 규칙준수</h3>
+          <p class="section-desc">근태관리 · 실습 주의사항 준수 · 과제 정시 제출</p>
+          <div class="checklist">
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s3-c1" onchange="updateScore(3)">
+              <label for="s3-c1">근태 규정을 정확히 준수하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s3-c2" onchange="updateScore(3)">
+              <label for="s3-c2">실습 중 안전·윤리·보안 규정을 지켰다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s3-c3" onchange="updateScore(3)">
+              <label for="s3-c3">주의사항 위반 사례가 없었다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s3-c4" onchange="updateScore(3)">
+              <label for="s3-c4">과제를 기한 내에 제출하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s3-c5" onchange="updateScore(3)">
+              <label for="s3-c5">규칙 미숙지 시 즉시 확인하고 수정하였다</label>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-label">환산 점수</span>
+            <span class="score-value" id="score-3">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 업무수행 -->
+      <div class="card">
+        <div class="eval-section" data-section="4">
+          <h3>4. 업무수행</h3>
+          <p class="section-desc">실습과정에서 업무수행의 질</p>
+          <div class="checklist">
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s4-c1" onchange="updateScore(4)">
+              <label for="s4-c1">실습 업무의 목적을 이해하고 수행하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s4-c2" onchange="updateScore(4)">
+              <label for="s4-c2">지시 사항을 정확히 이해하고 실행하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s4-c3" onchange="updateScore(4)">
+              <label for="s4-c3">반복 설명 없이도 유사 업무를 수행하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s4-c4" onchange="updateScore(4)">
+              <label for="s4-c4">업무의 정확성과 속도가 적절하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s4-c5" onchange="updateScore(4)">
+              <label for="s4-c5">실수 발생 시 즉시 보고하고 개선하려 하였다</label>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-label">환산 점수</span>
+            <span class="score-value" id="score-4">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 대인관계 -->
+      <div class="card">
+        <div class="eval-section" data-section="5">
+          <h3>5. 대인관계</h3>
+          <p class="section-desc">치료사 · 동료 · 참여자 등과의 상호작용 능력 및 갈등유무</p>
+          <div class="checklist">
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s5-c1" onchange="updateScore(5)">
+              <label for="s5-c1">치료사 및 직원과 원활하게 소통하였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s5-c2" onchange="updateScore(5)">
+              <label for="s5-c2">동료 실습생과 협력적인 태도를 보였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s5-c3" onchange="updateScore(5)">
+              <label for="s5-c3">참여자에게 존중과 배려를 보였다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s5-c4" onchange="updateScore(5)">
+              <label for="s5-c4">갈등 상황에서 감정적으로 대응하지 않았다</label>
+            </div>
+            <div class="checklist-item" onclick="toggleCheck(this)">
+              <input type="checkbox" id="s5-c5" onchange="updateScore(5)">
+              <label for="s5-c5">실습 분위기에 긍정적인 영향을 주었다</label>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-label">환산 점수</span>
+            <span class="score-value" id="score-5">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 총점 -->
+      <div class="total-score-card">
+        <div class="total-label">총점</div>
+        <div class="total-value" id="total-score">0</div>
+        <div class="total-max">/ 50점</div>
+      </div>
+
+      <!-- 제출 -->
+      <div class="submit-area">
+        <button class="btn-submit" id="btn-submit" onclick="submitEvaluation()">평가 제출</button>
+        <div class="status-msg" id="submit-status"></div>
+      </div>
+    </div>
+
+    <!-- ===== 관리자 탭 ===== -->
+    <div id="tab-admin" class="tab-page">
+      <div class="card">
+        <div class="card-title">관리자 인증</div>
+        <div class="inline-form" style="margin-top:12px;">
+          <input type="password" id="admin-pw" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')unlockAdmin()">
+          <button class="btn-sm btn-add" onclick="unlockAdmin()">확인</button>
+        </div>
+        <div class="status-msg" id="admin-lock-status"></div>
+      </div>
+
+      <div id="admin-content" style="display:none;">
+        <!-- 서버 설정 -->
+        <div class="card">
+          <div class="card-title">서버 설정</div>
+          <div class="admin-section" style="margin-top:12px;">
+            <h4>Google Apps Script URL</h4>
+            <div class="inline-form">
+              <input type="text" id="eval-script-url" placeholder="https://script.google.com/macros/s/.../exec">
+              <button class="btn-sm btn-add" onclick="saveEvalSettings()">저장</button>
+            </div>
+          </div>
+          <div class="admin-section">
+            <h4>비밀번호 변경</h4>
+            <div class="inline-form">
+              <input type="password" id="new-pw" placeholder="새 비밀번호">
+              <button class="btn-sm btn-edit" onclick="changeAdminPw()">변경</button>
+            </div>
+          </div>
+          <div class="status-msg" id="admin-settings-status"></div>
+        </div>
+
+        <!-- 분기별 학교/학생 관리 -->
+        <div class="card">
+          <div class="card-title">분기별 학교/학생 관리</div>
+          
+          <div class="info-box" style="margin-top:12px;">
+            <strong>구글 스프레드시트 연동 방법</strong><br><br>
+            스프레드시트에 아래 형식으로 작성하세요 (시트 이름은 자유):<br><br>
+            <table style="width:100%; border-collapse:collapse; margin-top:8px; font-size:12px;">
+              <tr style="background:#ffeeba;">
+                <th style="padding:4px 6px; border:1px solid #ddd;">A: 분기</th>
+                <th style="padding:4px 6px; border:1px solid #ddd;">B: 기간</th>
+                <th style="padding:4px 6px; border:1px solid #ddd;">C: 학교</th>
+                <th style="padding:4px 6px; border:1px solid #ddd;">D: 학생</th>
+                <th style="padding:4px 6px; border:1px solid #ddd;">E~G: ...</th>
+                <th style="padding:4px 6px; border:1px solid #ddd;">H: 주간평가</th>
+              </tr>
+              <tr>
+                <td style="padding:4px 6px; border:1px solid #ddd;">2026 춘계</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">3.2~4.24</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">인제대</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">민성연</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">...</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">O</td>
+              </tr>
+              <tr>
+                <td style="padding:4px 6px; border:1px solid #ddd;"></td>
+                <td style="padding:4px 6px; border:1px solid #ddd;"></td>
+                <td style="padding:4px 6px; border:1px solid #ddd;"></td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">박미경</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">...</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">O</td>
+              </tr>
+              <tr>
+                <td style="padding:4px 6px; border:1px solid #ddd;">2026 하계 1차</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">6.22~8.14</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">경남정보대</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">박예은</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">...</td>
+                <td style="padding:4px 6px; border:1px solid #ddd;">X</td>
+              </tr>
+            </table>
+            <br>
+            • 분기/학교가 빈칸이면 위 행의 값을 자동으로 이어받습니다<br>
+            • H열: <code>O</code> = 주간평가 해당, <code>X</code> 또는 빈칸 = 해당없음<br>
+            • B~G, I열 등 나머지 열은 관리용이며 웹앱 연동에 영향 없음
+          </div>
+
+          <!-- 스프레드시트에서 불러오기 -->
+          <div class="admin-section" style="margin-top:16px;">
+            <h4>📥 스프레드시트에서 명단 불러오기</h4>
+            <p style="font-size:12px; color:#7f8c8d; margin-bottom:8px;">서버에 등록된 스프레드시트의 Students 시트에서 불러옵니다.</p>
+            <div class="inline-form">
+              <button class="btn-sm btn-blue" onclick="loadStudentsFromSheet()">스프레드시트에서 불러오기</button>
+            </div>
+            <div class="status-msg" id="sheet-sync-status"></div>
+          </div>
+
+          <!-- 현재 분기 선택 및 수동 관리 -->
+          <div class="admin-section">
+            <h4>📋 현재 등록된 명단</h4>
+            <div class="inline-form">
+              <select id="admin-semester-select" onchange="renderAdminStudentList()">
+                <option value="">-- 분기 선택 --</option>
+              </select>
+            </div>
+            <div id="admin-student-list"></div>
+          </div>
+
+          <!-- 수동 추가 -->
+          <div class="admin-section">
+            <h4>➕ 수동 추가</h4>
+            <div class="inline-form">
+              <select id="manual-semester" style="flex:0.8;">
+                <option value="">분기</option>
+              </select>
+              <input type="text" id="manual-school" placeholder="학교 이름" style="flex:1;">
+              <input type="text" id="manual-student" placeholder="학생 이름" style="flex:1;">
+              <button class="btn-sm btn-add" onclick="manualAddStudent()">추가</button>
+            </div>
+            <div class="inline-form">
+              <input type="text" id="new-semester-name" placeholder="새 분기 추가 (예: 2026-춘계)">
+              <button class="btn-sm btn-edit" onclick="addNewSemester()">분기 추가</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 데이터 관리 -->
+        <div class="card">
+          <div class="card-title">데이터 관리</div>
+          <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+            <button class="btn-sm btn-add" onclick="uploadStudentsToSheet()">명단 → 서버 업로드</button>
+            <button class="btn-sm btn-del" onclick="clearLocalData()">로컬 데이터 초기화</button>
+          </div>
+          <div class="status-msg" id="sync-status"></div>
+        </div>
+
+        <!-- 평가 결과 조회 -->
+        <div class="card">
+          <div class="card-title">평가 결과 조회</div>
+          <div class="filter-row" style="margin-top:12px;">
+            <select id="filter-semester" onchange="onFilterSemesterChange()">
+              <option value="">전체 분기</option>
+            </select>
+            <select id="filter-school" onchange="onFilterSchoolChange()">
+              <option value="">전체 학교</option>
+            </select>
+            <select id="filter-student">
+              <option value="">전체 학생</option>
+            </select>
+            <button class="btn-sm btn-blue" onclick="loadResults()">조회</button>
+            <button class="btn-sm btn-add" onclick="loadResultsFromServer()">서버에서 불러오기</button>
+          </div>
+          <div class="table-wrap" id="results-area">
+            <p style="color:#7f8c8d; font-size:13px; margin-top:12px;">조회 버튼을 눌러주세요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 결과 조회 (관리자 탭 내부로 이동) ===== -->
+    <div id="tab-results" class="tab-page" style="display:none;"></div>
+  </div>
+
+  <script>
+    // ===== 데이터 구조 =====
+    // semesters: { "2025-하계": { "부산대학교": { students: ["김철수","이영희"], weekly: true }, ... }, ... }
+    // results: [ { semester, evaluator, school, student, scores, checks, totalScore, weeklyApplies, comment, timestamp }, ... ]
+    
+    const DEFAULT_PW = '1234';
+    // 기본 서버 URL (관리자가 GAS 배포 URL을 여기에 입력)
+    // 이 값이 있으면 어떤 기기에서 접속하든 자동으로 서버 연결됨
+    const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMmmrpejN1AkWZXaMf1NfcN-WsdHLdzKmO22j-jCjLiLkrJ3LnQ4FVseD7lVIKZcdW/exec';
+    
+    function getData() {
+      return JSON.parse(localStorage.getItem('evalAppData') || '{"semesters":{},"results":[]}');
+    }
+    function saveData(data) {
+      localStorage.setItem('evalAppData', JSON.stringify(data));
+    }
+    function getAdminPw() {
+      return localStorage.getItem('evalAdminPw') || DEFAULT_PW;
+    }
+    function getEvalScriptUrl() {
+      return localStorage.getItem('evalScriptUrl') || DEFAULT_SCRIPT_URL;
+    }
+
+    // 기존 데이터 마이그레이션
+    function migrateData() {
+      const raw = JSON.parse(localStorage.getItem('evalAppData') || '{}');
+      // schools → semesters 마이그레이션
+      if (raw.schools && !raw.semesters) {
+        const newSemesters = {};
+        newSemesters['미분류'] = {};
+        Object.keys(raw.schools).forEach(school => {
+          newSemesters['미분류'][school] = { students: raw.schools[school], weekly: false };
+        });
+        raw.semesters = newSemesters;
+        delete raw.schools;
+        if (!raw.results) raw.results = [];
+        localStorage.setItem('evalAppData', JSON.stringify(raw));
+      }
+      // 배열 형식 → 객체 형식 마이그레이션 (students 배열이 직접 있는 경우)
+      if (raw.semesters) {
+        let changed = false;
+        Object.keys(raw.semesters).forEach(sem => {
+          Object.keys(raw.semesters[sem]).forEach(school => {
+            if (Array.isArray(raw.semesters[sem][school])) {
+              raw.semesters[sem][school] = { students: raw.semesters[sem][school], weekly: false };
+              changed = true;
+            }
+          });
+        });
+        if (changed) localStorage.setItem('evalAppData', JSON.stringify(raw));
+      }
+    }
+
+    // ===== 탭 전환 =====
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      var tabIndex = ['eval','admin'].indexOf(tab);
+      document.querySelectorAll('.tab-nav button')[tabIndex].classList.add('active');
+      
+      if (tab === 'eval') refreshEvalDropdowns();
+      if (tab === 'admin') refreshFilterDropdowns();
+    }
+
+    // ===== 평가 탭: 분기 → 학교 → 학생 드롭다운 =====
+    function refreshEvalDropdowns() {
+      const data = getData();
+      const semesterSelect = document.getElementById('select-semester');
+      const currentSemester = semesterSelect.value;
+      
+      semesterSelect.innerHTML = '<option value="">-- 분기를 선택하세요 --</option>';
+      Object.keys(data.semesters).forEach(sem => {
+        semesterSelect.innerHTML += `<option value="${sem}" ${sem===currentSemester?'selected':''}>${sem}</option>`;
+      });
+      
+      if (currentSemester) onSemesterChange();
+    }
+
+    function onSemesterChange() {
+      const data = getData();
+      const semester = document.getElementById('select-semester').value;
+      const schoolSelect = document.getElementById('select-school');
+      const studentSelect = document.getElementById('select-student');
+      
+      // 주간평가 숨기기
+      document.getElementById('weekly-card').style.display = 'none';
+      document.getElementById('weekly-comment').value = '';
+      
+      if (!semester) {
+        schoolSelect.innerHTML = '<option value="">-- 먼저 분기를 선택하세요 --</option>';
+        schoolSelect.disabled = true;
+        studentSelect.innerHTML = '<option value="">-- 먼저 학교를 선택하세요 --</option>';
+        studentSelect.disabled = true;
+        return;
+      }
+      
+      const schools = data.semesters[semester] || {};
+      schoolSelect.disabled = false;
+      schoolSelect.innerHTML = '<option value="">-- 학교를 선택하세요 --</option>';
+      Object.keys(schools).sort().forEach(school => {
+        // 학생 배열이 있는 정상 학교만 표시 (학생 이름이 key로 잘못 들어간 경우 제외)
+        const schoolData = schools[school];
+        if (!schoolData || !schoolData.students || !Array.isArray(schoolData.students)) return;
+        schoolSelect.innerHTML += `<option value="${school}">${school}</option>`;
+      });
+      
+      studentSelect.innerHTML = '<option value="">-- 먼저 학교를 선택하세요 --</option>';
+      studentSelect.disabled = true;
+    }
+
+    function onSchoolChange() {
+      const data = getData();
+      const semester = document.getElementById('select-semester').value;
+      const school = document.getElementById('select-school').value;
+      const studentSelect = document.getElementById('select-student');
+      const weeklyCard = document.getElementById('weekly-card');
+      
+      // 주간평가 초기화
+      weeklyCard.style.display = 'none';
+      document.getElementById('weekly-comment').value = '';
+      
+      if (!school || !semester) {
+        studentSelect.innerHTML = '<option value="">-- 먼저 학교를 선택하세요 --</option>';
+        studentSelect.disabled = true;
+        return;
+      }
+      
+      const schoolData = data.semesters[semester] && data.semesters[semester][school];
+      if (!schoolData) {
+        studentSelect.innerHTML = '<option value="">-- 학생 없음 --</option>';
+        studentSelect.disabled = true;
+        return;
+      }
+
+      // 학생 드롭다운
+      const students = schoolData.students || [];
+      studentSelect.disabled = false;
+      studentSelect.innerHTML = '<option value="">-- 학생을 선택하세요 --</option>';
+      students.sort().forEach(name => {
+        studentSelect.innerHTML += `<option value="${name}">${name}</option>`;
+      });
+
+      // 주간평가 자동 활성화
+      if (schoolData.weekly) {
+        weeklyCard.style.display = 'block';
+      }
+    }
+
+    // ===== 점수 계산 =====
+    function calcScore(count) {
+      if (count >= 5) return 10;
+      if (count === 4) return 8;
+      if (count === 3) return 6;
+      if (count === 2) return 4;
+      if (count === 1) return 2;
+      return 0;
+    }
+
+    function toggleCheck(item) {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (event.target === checkbox || event.target.tagName === 'LABEL') return;
+      checkbox.checked = !checkbox.checked;
+      checkbox.dispatchEvent(new Event('change'));
+    }
+
+    function updateScore(section) {
+      let count = 0;
+      for (let i = 1; i <= 5; i++) {
+        if (document.getElementById(`s${section}-c${i}`).checked) count++;
+      }
+      document.getElementById(`score-${section}`).textContent = calcScore(count);
+      updateTotalScore();
+    }
+
+    function updateTotalScore() {
+      let total = 0;
+      for (let s = 1; s <= 5; s++) {
+        total += parseInt(document.getElementById(`score-${s}`).textContent);
+      }
+      document.getElementById('total-score').textContent = total;
+    }
+
+    // ===== 주간평가: 학교에 따라 자동 결정 =====
+    function isWeeklySchool() {
+      const data = getData();
+      const semester = document.getElementById('select-semester').value;
+      const school = document.getElementById('select-school').value;
+      if (!semester || !school) return false;
+      const schoolData = data.semesters[semester] && data.semesters[semester][school];
+      return schoolData && schoolData.weekly;
+    }
+
+    // ===== 평가 제출 =====
+    async function submitEvaluation() {
+      const evaluator = document.getElementById('evaluator-name').value.trim();
+      const semester = document.getElementById('select-semester').value;
+      const school = document.getElementById('select-school').value;
+      const student = document.getElementById('select-student').value;
+      const weeklyApplies = isWeeklySchool();
+      const comment = document.getElementById('weekly-comment').value.trim();
+
+      if (!evaluator) return showStatus('submit-status', '평가자 이름을 입력해주세요.', 'error');
+      if (!semester) return showStatus('submit-status', '분기를 선택해주세요.', 'error');
+      if (!school) return showStatus('submit-status', '학교를 선택해주세요.', 'error');
+      if (!student) return showStatus('submit-status', '학생을 선택해주세요.', 'error');
+      if (weeklyApplies && !comment) return showStatus('submit-status', '주간평가 코멘트를 입력해주세요.', 'error');
+
+      const scores = {};
+      const checks = {};
+      for (let s = 1; s <= 5; s++) {
+        scores[`section${s}`] = parseInt(document.getElementById(`score-${s}`).textContent);
+        const sChecks = [];
+        for (let i = 1; i <= 5; i++) {
+          sChecks.push(document.getElementById(`s${s}-c${i}`).checked);
+        }
+        checks[`section${s}`] = sChecks;
+      }
+
+      const result = {
+        evaluator,
+        semester,
+        school,
+        student,
+        scores,
+        checks,
+        totalScore: parseInt(document.getElementById('total-score').textContent),
+        weeklyApplies: weeklyApplies ? 'yes' : 'no',
+        comment: weeklyApplies ? comment : '',
+        timestamp: formatTimestamp(new Date())
+      };
+
+      // 로컬 저장
+      const data = getData();
+      data.results.push(result);
+      saveData(data);
+
+      // 서버 전송
+      const url = getEvalScriptUrl();
+      if (url) {
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        btn.textContent = '제출 중...';
+        try {
+          const response = await fetch(`${url}?action=saveEvaluation`, {
+            method: 'POST',
+            body: JSON.stringify(result),
+            headers: { 'Content-Type': 'text/plain' }
+          });
+          const res = await response.json();
+          if (res.error) throw new Error(res.error);
+          showStatus('submit-status', '평가가 성공적으로 제출되었습니다!', 'success');
+        } catch (e) {
+          showStatus('submit-status', `서버 전송 실패, 로컬에 저장됨. (${e.message})`, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '평가 제출';
+        }
+      } else {
+        showStatus('submit-status', '평가가 저장되었습니다!', 'success');
+      }
+
+      resetForm();
+    }
+
+    function resetForm() {
+      document.getElementById('weekly-comment').value = '';
+      document.getElementById('weekly-card').style.display = 'none';
+      // 학교/학생만 초기화, 분기는 유지
+      document.getElementById('select-school').value = '';
+      document.getElementById('select-student').value = '';
+      document.getElementById('select-student').disabled = true;
+      document.getElementById('select-student').innerHTML = '<option value="">-- 먼저 학교를 선택하세요 --</option>';
+      for (let s = 1; s <= 5; s++) {
+        for (let i = 1; i <= 5; i++) {
+          document.getElementById(`s${s}-c${i}`).checked = false;
+        }
+        document.getElementById(`score-${s}`).textContent = '0';
+      }
+      document.getElementById('total-score').textContent = '0';
+    }
+
+    // ===== 관리자 =====
+    function unlockAdmin() {
+      const pw = document.getElementById('admin-pw').value;
+      if (pw === getAdminPw()) {
+        document.getElementById('admin-content').style.display = 'block';
+        document.getElementById('eval-script-url').value = getEvalScriptUrl();
+        refreshAdminSemesterSelects();
+        renderAdminStudentList();
+        refreshFilterDropdowns();
+        showStatus('admin-lock-status', '인증 성공!', 'success');
+      } else {
+        showStatus('admin-lock-status', '비밀번호가 틀렸습니다.', 'error');
+      }
+    }
+
+    function changeAdminPw() {
+      const newPw = document.getElementById('new-pw').value.trim();
+      if (!newPw) return showStatus('admin-settings-status', '비밀번호를 입력하세요.', 'error');
+      localStorage.setItem('evalAdminPw', newPw);
+      document.getElementById('new-pw').value = '';
+      showStatus('admin-settings-status', '비밀번호가 변경되었습니다.', 'success');
+    }
+
+    function saveEvalSettings() {
+      const url = document.getElementById('eval-script-url').value.trim();
+      localStorage.setItem('evalScriptUrl', url);
+      showStatus('admin-settings-status', url ? 'URL 저장됨. 학생 명단을 불러옵니다...' : 'URL이 초기화되었습니다.', 'success');
+      // URL 저장 후 즉시 학생 명단 동기화
+      if (url) {
+        fetch(url + '?action=getStudents')
+          .then(function(r) { return r.json(); })
+          .then(function(result) {
+            if (result.error || !result.semesters) {
+              showStatus('admin-settings-status', 'URL 저장됨. 명단 불러오기 실패.', 'error');
+              return;
+            }
+            var d = getData();
+            d.semesters = result.semesters;
+            saveData(d);
+            refreshAdminSemesterSelects();
+            renderAdminStudentList();
+            refreshEvalDropdowns();
+            showStatus('admin-settings-status', 'URL 저장 + 명단 동기화 완료!', 'success');
+          })
+          .catch(function(e) {
+            showStatus('admin-settings-status', 'URL 저장됨. 연결 실패: ' + e.message, 'error');
+          });
+      }
+    }
+
+    // ===== 분기 관리 =====
+    function refreshAdminSemesterSelects() {
+      const data = getData();
+      const semesters = Object.keys(data.semesters);
+      
+      // 관리자 분기 보기 셀렉트
+      const adminSelect = document.getElementById('admin-semester-select');
+      const currentAdmin = adminSelect.value;
+      adminSelect.innerHTML = '<option value="">-- 분기 선택 --</option>';
+      semesters.forEach(s => {
+        adminSelect.innerHTML += `<option value="${s}" ${s===currentAdmin?'selected':''}>${s}</option>`;
+      });
+
+      // 수동 추가용 분기 셀렉트
+      const manualSelect = document.getElementById('manual-semester');
+      const currentManual = manualSelect.value;
+      manualSelect.innerHTML = '<option value="">분기</option>';
+      semesters.forEach(s => {
+        manualSelect.innerHTML += `<option value="${s}" ${s===currentManual?'selected':''}>${s}</option>`;
+      });
+    }
+
+    function addNewSemester() {
+      const name = document.getElementById('new-semester-name').value.trim();
+      if (!name) return;
+      const data = getData();
+      if (data.semesters[name]) return alert('이미 존재하는 분기입니다.');
+      data.semesters[name] = {};
+      saveData(data);
+      document.getElementById('new-semester-name').value = '';
+      refreshAdminSemesterSelects();
+    }
+
+    // ===== 학생 목록 렌더링 =====
+    function renderAdminStudentList() {
+      const data = getData();
+      const semester = document.getElementById('admin-semester-select').value;
+      const container = document.getElementById('admin-student-list');
+
+      if (!semester) {
+        container.innerHTML = '<p style="color:#7f8c8d; font-size:13px;">분기를 선택하세요.</p>';
+        return;
+      }
+
+      const schools = data.semesters[semester] || {};
+      const schoolNames = Object.keys(schools).sort();
+
+      if (schoolNames.length === 0) {
+        container.innerHTML = '<p style="color:#7f8c8d; font-size:13px;">등록된 학교/학생이 없습니다.</p>';
+        return;
+      }
+
+      let html = '';
+      schoolNames.forEach(school => {
+        const schoolData = schools[school];
+        const students = schoolData.students || [];
+        const weeklyLabel = schoolData.weekly ? '주간평가 ✓' : '주간평가 ✗';
+        const weeklyColor = schoolData.weekly ? 'color:#27ae60;' : 'color:#e74c3c;';
+        html += `<div class="school-card">
+          <div class="school-card-header">
+            <h5>${school} <span style="font-size:12px; color:#7f8c8d;">(${students.length}명)</span> <span style="font-size:11px; ${weeklyColor}">${weeklyLabel}</span></h5>
+            <button class="btn-sm btn-del" onclick="removeSchool('${semester}','${school}')">학교 삭제</button>
+          </div>
+          <div class="tag-list">`;
+        students.sort().forEach(student => {
+          html += `<div class="tag-item">${student}
+            <button class="tag-remove" onclick="removeStudent('${semester}','${school}','${student}')">×</button>
+          </div>`;
+        });
+        if (students.length === 0) {
+          html += '<span style="font-size:12px; color:#bdc3c7;">학생 없음</span>';
+        }
+        html += '</div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    // ===== 수동 추가/삭제 =====
+    function manualAddStudent() {
+      const semester = document.getElementById('manual-semester').value;
+      const school = document.getElementById('manual-school').value.trim();
+      const student = document.getElementById('manual-student').value.trim();
+      
+      if (!semester) return alert('분기를 선택하세요.');
+      if (!school) return alert('학교 이름을 입력하세요.');
+      if (!student) return alert('학생 이름을 입력하세요.');
+
+      const data = getData();
+      if (!data.semesters[semester]) data.semesters[semester] = {};
+      if (!data.semesters[semester][school]) data.semesters[semester][school] = { students: [], weekly: false };
+      if (data.semesters[semester][school].students.includes(student)) return alert('이미 등록된 학생입니다.');
+      
+      data.semesters[semester][school].students.push(student);
+      saveData(data);
+      document.getElementById('manual-student').value = '';
+      
+      if (document.getElementById('admin-semester-select').value === semester) {
+        renderAdminStudentList();
+      }
+      refreshAdminSemesterSelects();
+    }
+
+    function removeSchool(semester, school) {
+      if (!confirm(`"${school}" 학교와 소속 학생을 모두 삭제하시겠습니까?`)) return;
+      const data = getData();
+      if (data.semesters[semester]) delete data.semesters[semester][school];
+      saveData(data);
+      renderAdminStudentList();
+    }
+
+    function removeStudent(semester, school, student) {
+      const data = getData();
+      if (data.semesters[semester] && data.semesters[semester][school]) {
+        data.semesters[semester][school].students = data.semesters[semester][school].students.filter(s => s !== student);
+      }
+      saveData(data);
+      renderAdminStudentList();
+    }
+
+    // ===== 구글 스프레드시트 연동 =====
+    async function loadStudentsFromSheet() {
+      const url = getEvalScriptUrl();
+      if (!url) return showStatus('sheet-sync-status', '서버 URL을 먼저 설정하세요.', 'error');
+
+      showStatus('sheet-sync-status', '불러오는 중...', 'info');
+      
+      // Google Apps Script는 JSONP callback을 지원하므로 script 태그 방식 사용
+      loadViaJsonp(`${url}?action=getStudents`, (err, result) => {
+        if (err) {
+          showStatus('sheet-sync-status', '불러오기 실패: ' + err.message, 'error');
+          return;
+        }
+        if (result.error) {
+          showStatus('sheet-sync-status', '불러오기 실패: ' + result.error, 'error');
+          return;
+        }
+
+        const data = getData();
+        data.semesters = result.semesters || {};
+        saveData(data);
+
+        refreshAdminSemesterSelects();
+        renderAdminStudentList();
+        showStatus('sheet-sync-status', `불러오기 완료! (${Object.keys(data.semesters).length}개 분기)`, 'success');
+      });
+    }
+
+    // CORS 우회: 숨겨진 iframe으로 Apps Script 호출 후 결과 수신
+    function loadViaJsonp(url, callback) {
+      const callbackName = '_cb_' + Date.now();
+      const timeout = setTimeout(() => {
+        delete window[callbackName];
+        callback(new Error('시간 초과 - Apps Script URL을 확인하세요'));
+      }, 20000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        callback(null, data);
+      };
+
+      // Google Apps Script는 JSONP를 직접 지원하지 않으므로 fetch를 다시 시도
+      // 단, Content-Type 문제를 피하기 위해 text로 받아서 파싱
+      fetch(url)
+        .then(r => r.text())
+        .then(text => {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          try {
+            const result = JSON.parse(text);
+            callback(null, result);
+          } catch(e) {
+            callback(new Error('응답 파싱 실패'));
+          }
+        })
+        .catch(err => {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          callback(err);
+        });
+    }
+
+    async function uploadStudentsToSheet() {
+      const url = getEvalScriptUrl();
+      if (!url) return showStatus('sync-status', '서버 URL을 먼저 설정하세요.', 'error');
+
+      const data = getData();
+      try {
+        const response = await fetch(`${url}?action=saveStudents`, {
+          method: 'POST',
+          body: JSON.stringify({ semesters: data.semesters }),
+          headers: { 'Content-Type': 'text/plain' }
+        });
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+        showStatus('sync-status', '서버에 업로드 완료!', 'success');
+      } catch (e) {
+        showStatus('sync-status', '업로드 실패: ' + e.message, 'error');
+      }
+    }
+
+    function clearLocalData() {
+      if (!confirm('로컬의 모든 데이터를 삭제하고 서버에서 다시 불러오시겠습니까?\n(서버 데이터는 유지됩니다)')) return;
+      saveData({ semesters: {}, results: [] });
+      showStatus('sync-status', '초기화 완료. 서버에서 데이터를 다시 불러옵니다...', 'info');
+      // 자동으로 서버에서 학생 명단 + 평가 결과 재로드
+      var url = getEvalScriptUrl();
+      if (url) {
+        Promise.all([
+          fetch(url + '?action=getStudents').then(function(r){return r.json();}),
+          fetch(url + '?action=getEvaluations').then(function(r){return r.json();})
+        ]).then(function(responses) {
+          var d = getData();
+          if (responses[0].semesters) d.semesters = responses[0].semesters;
+          if (responses[1].evaluations) d.results = responses[1].evaluations;
+          saveData(d);
+          refreshAdminSemesterSelects();
+          renderAdminStudentList();
+          refreshEvalDropdowns();
+          refreshFilterDropdowns();
+          showStatus('sync-status', '초기화 + 서버 동기화 완료!', 'success');
+        }).catch(function(e) {
+          refreshAdminSemesterSelects();
+          renderAdminStudentList();
+          showStatus('sync-status', '초기화됨. 서버 연결 실패: ' + e.message, 'error');
+        });
+      } else {
+        refreshAdminSemesterSelects();
+        renderAdminStudentList();
+        showStatus('sync-status', '로컬 데이터가 초기화되었습니다. (서버 URL 미설정)', 'success');
+      }
+    }
+
+    // ===== 결과 조회 =====
+    function refreshFilterDropdowns() {
+      const data = getData();
+      const semesterFilter = document.getElementById('filter-semester');
+      semesterFilter.innerHTML = '<option value="">전체 분기</option>';
+      Object.keys(data.semesters).forEach(sem => {
+        semesterFilter.innerHTML += `<option value="${sem}">${sem}</option>`;
+      });
+    }
+
+    function onFilterSemesterChange() {
+      const data = getData();
+      const semester = document.getElementById('filter-semester').value;
+      const schoolFilter = document.getElementById('filter-school');
+      const studentFilter = document.getElementById('filter-student');
+      
+      schoolFilter.innerHTML = '<option value="">전체 학교</option>';
+      studentFilter.innerHTML = '<option value="">전체 학생</option>';
+
+      if (semester && data.semesters[semester]) {
+        Object.keys(data.semesters[semester]).sort().forEach(school => {
+          schoolFilter.innerHTML += `<option value="${school}">${school}</option>`;
+        });
+      } else {
+        const allSchools = new Set();
+        Object.values(data.semesters).forEach(schools => {
+          Object.keys(schools).forEach(s => allSchools.add(s));
+        });
+        [...allSchools].sort().forEach(school => {
+          schoolFilter.innerHTML += `<option value="${school}">${school}</option>`;
+        });
+      }
+    }
+
+    function onFilterSchoolChange() {
+      const data = getData();
+      const semester = document.getElementById('filter-semester').value;
+      const school = document.getElementById('filter-school').value;
+      const studentFilter = document.getElementById('filter-student');
+      
+      studentFilter.innerHTML = '<option value="">전체 학생</option>';
+      if (!school) return;
+
+      const allStudents = new Set();
+      if (semester && data.semesters[semester] && data.semesters[semester][school]) {
+        (data.semesters[semester][school].students || []).forEach(s => allStudents.add(s));
+      } else {
+        Object.values(data.semesters).forEach(schools => {
+          if (schools[school]) (schools[school].students || []).forEach(s => allStudents.add(s));
+        });
+      }
+      [...allStudents].sort().forEach(name => {
+        studentFilter.innerHTML += `<option value="${name}">${name}</option>`;
+      });
+    }
+
+    function loadResults() {
+      const data = getData();
+      const semesterFilter = document.getElementById('filter-semester').value;
+      const schoolFilter = document.getElementById('filter-school').value;
+      const studentFilter = document.getElementById('filter-student').value;
+      
+      let results = data.results || [];
+      if (semesterFilter) results = results.filter(r => r.semester === semesterFilter);
+      if (schoolFilter) results = results.filter(r => r.school === schoolFilter);
+      if (studentFilter) results = results.filter(r => r.student === studentFilter);
+
+      const area = document.getElementById('results-area');
+      if (results.length === 0) {
+        area.innerHTML = '<p style="color:#7f8c8d; font-size:13px; margin-top:12px;">조회된 결과가 없습니다.</p>';
+        return;
+      }
+
+      results.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      // 원본 데이터에서의 인덱스를 매핑
+      const allResults = getData().results || [];
+
+      const sectionNames = ['가치와방향', '실습태도', '규칙준수', '업무수행', '대인관계'];
+      const sectionHeaders = sectionNames.map(n => '<th>' + n + '</th>').join('');
+      var html = '<table class="result-table">';
+      html += '<thead><tr>';
+      html += '<th>날짜</th><th>분기</th><th>평가자</th><th>학교</th><th>학생</th>';
+      html += sectionHeaders;
+      html += '<th>총점</th><th>주간평가</th><th>코멘트</th><th>관리</th>';
+      html += '</tr></thead><tbody>';
+
+      results.forEach(function(r, idx) {
+        var date = formatDisplayDate(r.timestamp);
+        var weeklyLabel = r.weeklyApplies === 'yes' ? '해당' : r.weeklyApplies === 'no' ? '해당없음' : '-';
+        // 원본에서의 실제 인덱스 찾기
+        var origIdx = allResults.indexOf(r);
+        html += '<tr>';
+        html += '<td>' + date + '</td>';
+        html += '<td><span class="semester-badge">' + (r.semester || '-') + '</span></td>';
+        html += '<td>' + (r.evaluator || '-') + '</td>';
+        html += '<td>' + (r.school || '-') + '</td>';
+        html += '<td>' + (r.student || '-') + '</td>';
+        for (var s = 1; s <= 5; s++) {
+          var key = 'section' + s;
+          html += '<td>' + (r.scores ? r.scores[key] : '-') + '</td>';
+        }
+        html += '<td><strong>' + (r.totalScore || '-') + '</strong></td>';
+        html += '<td>' + weeklyLabel + '</td>';
+        html += '<td style="text-align:left;font-size:11px;max-width:120px;word-break:break-all;">' + (r.comment || '-') + '</td>';
+        html += '<td style="white-space:nowrap;">';
+        html += '<button class="btn-sm btn-blue" onclick="printReport(' + idx + ')" style="padding:3px 6px;font-size:10px;margin:1px;">출력</button>';
+        html += '<button class="btn-sm btn-edit" onclick="editResult(' + origIdx + ')" style="padding:3px 6px;font-size:10px;margin:1px;">수정</button>';
+        html += '<button class="btn-sm btn-del" onclick="deleteResult(' + origIdx + ')" style="padding:3px 6px;font-size:10px;margin:1px;">삭제</button>';
+        html += '</td></tr>';
+      });
+      html += '</tbody></table>';
+
+      // 전체 보고서 출력 버튼
+      if (studentFilter && results.length > 0) {
+        html += '<div style="margin-top:12px; text-align:right;">';
+        html += '<button class="btn-sm btn-blue" onclick="printReportAggregate()">📄 종합 보고서 출력</button>';
+        html += '</div>';
+      }
+
+      area.innerHTML = html;
+
+      // 필터된 결과를 전역에 저장 (출력 기능용)
+      window._filteredResults = results;
+    }
+
+    // ===== 결과 수정/삭제 =====
+    function deleteResult(origIdx) {
+      if (!confirm('이 평가 결과를 삭제하시겠습니까?')) return;
+      var data = getData();
+      if (data.results && data.results[origIdx] !== undefined) {
+        data.results.splice(origIdx, 1);
+        saveData(data);
+        loadResults();
+      }
+    }
+
+    function editResult(origIdx) {
+      var data = getData();
+      var r = data.results[origIdx];
+      if (!r) return alert('결과를 찾을 수 없습니다.');
+      
+      var newScore = prompt('각 항목 점수를 쉼표로 입력하세요 (가치와방향,실습태도,규칙준수,업무수행,대인관계)\n현재: ' + 
+        [r.scores.section1, r.scores.section2, r.scores.section3, r.scores.section4, r.scores.section5].join(','),
+        [r.scores.section1, r.scores.section2, r.scores.section3, r.scores.section4, r.scores.section5].join(','));
+      if (newScore === null) return;
+      
+      var parts = newScore.split(',').map(function(v) { return parseInt(v.trim()) || 0; });
+      if (parts.length !== 5) return alert('5개 점수를 쉼표로 구분해서 입력하세요.');
+      
+      r.scores.section1 = parts[0];
+      r.scores.section2 = parts[1];
+      r.scores.section3 = parts[2];
+      r.scores.section4 = parts[3];
+      r.scores.section5 = parts[4];
+      r.totalScore = parts[0] + parts[1] + parts[2] + parts[3] + parts[4];
+      
+      var newComment = prompt('주간평가 코멘트:', r.comment || '');
+      if (newComment !== null) r.comment = newComment;
+      
+      data.results[origIdx] = r;
+      saveData(data);
+      loadResults();
+    }
+
+    // ===== 서버에서 결과 불러오기 =====
+    function loadResultsFromServer() {
+      var url = getEvalScriptUrl();
+      if (!url) return alert('서버 URL이 설정되지 않았습니다.');
+      
+      var area = document.getElementById('results-area');
+      area.innerHTML = '<p style="color:#0c5460; font-size:13px;">서버에서 불러오는 중...</p>';
+      
+      fetch(url + '?action=getEvaluations')
+        .then(function(resp) { return resp.json(); })
+        .then(function(result) {
+          if (result.error) throw new Error(result.error);
+          var serverResults = result.evaluations || [];
+          if (serverResults.length === 0) {
+            area.innerHTML = '<p style="color:#7f8c8d; font-size:13px;">서버에 저장된 결과가 없습니다.</p>';
+            return;
+          }
+          // 서버 결과로 로컬을 완전 교체 (서버가 유일한 진실의 원천)
+          var data = getData();
+          data.results = serverResults;
+          saveData(data);
+          loadResults();
+          alert('서버에서 ' + serverResults.length + '건을 불러왔습니다. (로컬 결과를 서버 데이터로 교체)');
+        })
+        .catch(function(e) {
+          area.innerHTML = '<p style="color:#721c24; font-size:13px;">불러오기 실패: ' + e.message + '</p>';
+        });
+    }
+
+    // ===== 보고서 출력 (실습 평가서 양식) =====
+    function printReport(idx) {
+      const results = window._filteredResults || [];
+      if (!results[idx]) return alert('결과를 찾을 수 없습니다.');
+      const r = results[idx];
+      openReportWindow(r);
+    }
+
+    function printReportAggregate() {
+      const results = window._filteredResults || [];
+      if (results.length === 0) return alert('결과가 없습니다.');
+
+      // 동일 학생의 여러 평가를 평균으로 종합
+      const student = results[0].student;
+      const school = results[0].school;
+      const semester = results[0].semester;
+
+      const avgScores = { section1: 0, section2: 0, section3: 0, section4: 0, section5: 0 };
+      results.forEach(r => {
+        for (let s = 1; s <= 5; s++) {
+          avgScores[`section${s}`] += (r.scores ? r.scores[`section${s}`] : 0);
+        }
+      });
+      const count = results.length;
+      for (let s = 1; s <= 5; s++) {
+        // 평균을 가장 가까운 유효 점수(2,4,6,8,10)로 반올림
+        var avg = avgScores['section' + s] / count;
+        var validScores = [2, 4, 6, 8, 10];
+        var closest = validScores.reduce(function(prev, curr) {
+          return Math.abs(curr - avg) < Math.abs(prev - avg) ? curr : prev;
+        });
+        avgScores['section' + s] = closest;
+      }
+      const totalScore = avgScores.section1 + avgScores.section2 + avgScores.section3 + avgScores.section4 + avgScores.section5;
+
+      const aggregated = {
+        student,
+        school,
+        semester,
+        evaluator: results.map(r => r.evaluator).filter((v,i,a) => a.indexOf(v)===i).join(', '),
+        scores: avgScores,
+        totalScore,
+        timestamp: results[0].timestamp
+      };
+      openReportWindow(aggregated);
+    }
+
+    function openReportWindow(r) {
+      var scores = r.scores || {};
+      var s1 = scores.section1 || 0;
+      var s2 = scores.section2 || 0;
+      var s3 = scores.section3 || 0;
+      var s4 = scores.section4 || 0;
+      var s5 = scores.section5 || 0;
+      var total = r.totalScore || (s1+s2+s3+s4+s5);
+      function sc(score, target) { return score === target ? '✔' : ''; }
+
+      // 스프레드시트에서 성별(E열)과 기간(B열) 가져오기
+      var gender = '';
+      var period = '';
+      var data = getData();
+      if (r.semester && r.school && r.student && data.semesters[r.semester] && data.semesters[r.semester][r.school]) {
+        var schoolData = data.semesters[r.semester][r.school];
+        if (schoolData.details && schoolData.details[r.student]) {
+          gender = schoolData.details[r.student].gender || '';
+          period = schoolData.details[r.student].period || '';
+        }
+      }
+
+      var h = '';
+      h += '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">';
+      h += '<title>실습 평가서</title><style>';
+      h += '@page{size:A4;margin:15mm 15mm 10mm 15mm}';
+      h += '@media print{body{margin:0;padding:10px 20px}.no-print{display:none!important}input,textarea{border:none!important;outline:none!important;box-shadow:none!important}}';
+      h += '*{margin:0;padding:0;box-sizing:border-box}';
+      h += 'body{font-family:"Malgun Gothic",sans-serif;padding:20px 30px;color:#000;font-size:12px;line-height:1.4;max-width:780px;margin:0 auto}';
+      h += '.rt{background:#fff;color:#000;text-align:center;font-size:28px;font-weight:bold;letter-spacing:24px;padding:14px 0;margin-bottom:12px}';
+      h += 'table{width:100%;border-collapse:collapse;border:2px solid #000}';
+      h += 'th,td{border:1px solid #000;padding:6px 5px;text-align:center;vertical-align:middle;font-size:12px}';
+      h += '.it{margin-bottom:12px}.it th{background:#e8e8e8;font-weight:bold;letter-spacing:4px}';
+      h += '.it td{padding:8px 6px;height:30px}.it input{width:100%;border:none;text-align:center;font-size:12px;font-family:inherit;outline:none;background:transparent}';
+      h += '.et{margin-bottom:0;border-bottom:2px solid #000}';
+      h += '.et .hr th{background:#e8e8e8;font-weight:bold;padding:6px}';
+      h += '.et .sh th{background:#e8e8e8;font-weight:bold;font-size:14px;padding:6px;width:7%}';
+      h += '.et .sn{font-weight:bold;width:13%;padding:10px 6px;height:48px}';
+      h += '.et .sd{text-align:left;font-size:11px;padding:10px 10px;line-height:1.5;height:48px}';
+      h += '.et .sc{width:7%;font-size:18px;font-weight:bold;color:#2c3e6b}';
+      h += '.et .tr td{font-weight:bold;font-size:13px;padding:8px}';
+      h += '.ivt{margin-top:12px}.ivt th{background:#f0f0f0;font-weight:bold;width:14%;padding:8px 6px;vertical-align:middle}';
+      h += '.ivt .ia{height:155px;vertical-align:top;text-align:left;padding:8px}';
+      h += '.ivt .ia textarea{width:100%;height:140px;border:none;outline:none;resize:none;font-family:inherit;font-size:12px;line-height:1.5;background:transparent}';
+      h += '.ivt .si{text-align:right;padding-right:12px;height:45px}';
+      h += '.ivt .si input{width:50px;border:none;border-bottom:1px solid #999;text-align:right;font-size:16px;font-weight:bold;font-family:inherit;outline:none;background:transparent}';
+      h += '.ft{margin-top:12px}.ft td,.ft th{padding:12px 8px}';
+      h += '.ft .fl{background:#d0d8e8;font-weight:bold;width:14%;font-size:14px}';
+      h += '.ft .fv{text-align:right;padding-right:16px;font-size:16px;font-weight:bold}';
+      h += '.ft .fv input{width:50px;border:none;border-bottom:1px solid #999;text-align:right;font-size:16px;font-weight:bold;font-family:inherit;outline:none;background:transparent}';
+      h += '.ft .rl{background:#f0f0f0;font-weight:bold;width:14%}';
+      h += '.ft .rc{font-size:15px;padding:12px 20px}';
+      h += '.ft .rc label{cursor:pointer;margin-right:50px;font-weight:bold}';
+      h += '.ft .rc input[type=checkbox]{width:16px;height:16px;margin-right:4px;vertical-align:middle}';
+      h += '.nt{font-size:11px;text-align:right;margin-top:4px;color:#333}';
+      h += '.sa{text-align:right;margin-top:6px;font-size:13px;font-weight:bold}';
+      h += '.sa input{width:80px;border:none;border-bottom:1px solid #999;text-align:center;font-size:13px;font-family:inherit;outline:none;background:transparent}';
+      h += '.pb{position:fixed;top:20px;right:20px;background:#4a6cf7;color:#fff;border:none;padding:12px 24px;font-size:14px;font-weight:bold;border-radius:6px;cursor:pointer;z-index:1000}';
+      h += '</style></head><body>';
+      h += '<div class="rt">실 습 평 가 서</div>';
+      h += '<table class="it"><tr><th style="width:14%">성 명</th><th style="width:7%">성별</th><th style="width:18%">학 교</th><th style="width:40%">실 습 기 간</th><th style="width:21%">연락처</th></tr>';
+      h += '<tr><td><input type="text" value="' + (r.student||'') + '"></td>';
+      h += '<td><input type="text" value="' + gender + '"></td>';
+      h += '<td><input type="text" value="' + (r.school||'') + '"></td>';
+      h += '<td><input type="text" value="' + period + '"></td>';
+      h += '<td><input type="text" value=""></td></tr></table>';
+      h += '<table class="et">';
+      h += '<tr class="hr"><th colspan="2" rowspan="2">평 가 항 목</th><th colspan="5">평 가 점 수</th></tr>';
+      h += '<tr class="sh"><th>10</th><th>8</th><th>6</th><th>4</th><th>2</th></tr>';
+      h += '<tr><td class="sn">가치와 방향의<br>적합성</td><td class="sd">병원의 가치와 방향에 대한 공감여부와 이에 따른 실습 과정에서 참여의 적극성</td>';
+      h += '<td class="sc">'+sc(s1,10)+'</td><td class="sc">'+sc(s1,8)+'</td><td class="sc">'+sc(s1,6)+'</td><td class="sc">'+sc(s1,4)+'</td><td class="sc">'+sc(s1,2)+'</td></tr>';
+      h += '<tr><td class="sn">실습태도</td><td class="sd">용모단정 · 실습 복장 · 실습 준비 · 참여자 및 선생님 대응태도</td>';
+      h += '<td class="sc">'+sc(s2,10)+'</td><td class="sc">'+sc(s2,8)+'</td><td class="sc">'+sc(s2,6)+'</td><td class="sc">'+sc(s2,4)+'</td><td class="sc">'+sc(s2,2)+'</td></tr>';
+      h += '<tr><td class="sn">규칙준수</td><td class="sd">근태관리 · 실습 주의사항 준수 · 과제 정시 제출</td>';
+      h += '<td class="sc">'+sc(s3,10)+'</td><td class="sc">'+sc(s3,8)+'</td><td class="sc">'+sc(s3,6)+'</td><td class="sc">'+sc(s3,4)+'</td><td class="sc">'+sc(s3,2)+'</td></tr>';
+      h += '<tr><td class="sn">업무수행</td><td class="sd">실습 과정에서 업무수행의 질</td>';
+      h += '<td class="sc">'+sc(s4,10)+'</td><td class="sc">'+sc(s4,8)+'</td><td class="sc">'+sc(s4,6)+'</td><td class="sc">'+sc(s4,4)+'</td><td class="sc">'+sc(s4,2)+'</td></tr>';
+      h += '<tr><td class="sn">대인관계</td><td class="sd">치료사 · 동료 · 참여자 등과의 상호작용 능력 및 갈등유무</td>';
+      h += '<td class="sc">'+sc(s5,10)+'</td><td class="sc">'+sc(s5,8)+'</td><td class="sc">'+sc(s5,6)+'</td><td class="sc">'+sc(s5,4)+'</td><td class="sc">'+sc(s5,2)+'</td></tr>';
+      h += '<tr class="tr"><td colspan="2">총점</td><td colspan="5" style="text-align:right;padding-right:16px;font-size:16px;">'+total+' /50</td></tr>';
+      h += '</table>';
+      h += '<table class="ivt"><tr><th>팀장 면담<br>의견</th><td class="ia"><textarea placeholder="면담 의견을 입력하세요"></textarea></td></tr>';
+      h += '<tr><th>면담 점수</th><td class="si"><input type="text" id="iv-score" oninput="calcF()"> /50</td></tr></table>';
+      h += '<table class="ft"><tr><td class="fl">최종점수</td><td class="fv"><input type="text" id="final-score" value="" readonly> /100</td></tr>';
+      h += '<tr><td class="rl">추천여부</td><td class="rc">';
+      h += '<label><input type="checkbox" id="cr" onchange="uc(this,\'cnr\')"> 추천</label>';
+      h += '<label><input type="checkbox" id="cnr" onchange="uc(this,\'cr\')"> 비추천</label>';
+      h += '</td></tr></table>';
+      h += '<p class="nt">※ 추천 여부는 최종 점수 90점 이상을 대상으로 가능합니다.</p>';
+      h += '<div class="sa">평가자 : <input type="text" value=""> &nbsp;&nbsp; (서 명)</div>';
+      h += '</body></html>';
+
+      var w = window.open('', '_blank');
+      w.document.write(h);
+      w.document.close();
+      var scr = w.document.createElement('script');
+      var scriptCode = 'var et='+total+';';
+      scriptCode += 'function calcF(){var v=parseInt(document.getElementById("iv-score").value)||0;document.getElementById("final-score").value=et+v;}';
+      scriptCode += 'function uc(el,id){if(el.checked)document.getElementById(id).checked=false;}';
+      scriptCode += 'function downloadHTML(){';
+      scriptCode += 'var clone=document.documentElement.cloneNode(true);';
+      scriptCode += 'var btns=clone.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].parentNode.removeChild(btns[i]);';
+      scriptCode += 'var blob=new Blob(["<!DOCTYPE html>"+clone.outerHTML],{type:"text/html;charset=utf-8"});';
+      scriptCode += 'var a=document.createElement("a");a.href=URL.createObjectURL(blob);';
+      scriptCode += 'a.download="실습평가서_' + (r.student||'보고서') + '.html";a.click();URL.revokeObjectURL(a.href);}';
+      scr.textContent = scriptCode;
+      w.document.body.appendChild(scr);
+
+      // 버튼 컨테이너 삽입
+      var btnDiv = w.document.createElement('div');
+      btnDiv.className = 'no-print';
+      btnDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:1000;display:flex;gap:8px;';
+      btnDiv.innerHTML = '<button onclick="window.print()" style="background:#4a6cf7;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">🖨️ 인쇄 / PDF</button><button onclick="downloadHTML()" style="background:#27ae60;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">📥 HTML 다운로드</button>';
+      w.document.body.insertBefore(btnDiv, w.document.body.firstChild);
+    }
+
+    // ===== 유틸 =====
+    function showStatus(id, msg, type) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `status-msg show ${type}`;
+      if (type !== 'info') setTimeout(() => el.classList.remove('show'), 4000);
+    }
+
+    function formatTimestamp(date) {
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      let h = date.getHours();
+      const ampm = h >= 12 ? '오후' : '오전';
+      h = h % 12 || 12;
+      const min = String(date.getMinutes()).padStart(2, '0');
+      return `${m}/${d} ${ampm} ${h}:${min}`;
+    }
+
+    function formatDisplayDate(timestamp) {
+      if (!timestamp) return '-';
+      // 이미 "06/06 오후 4:54" 형식이면 그대로 표시
+      if (typeof timestamp === 'string' && /^\d{2}\/\d{2}/.test(timestamp)) {
+        return timestamp;
+      }
+      // ISO 형식이나 Date 객체로 파싱 시도
+      const d = new Date(timestamp);
+      if (isNaN(d.getTime())) return String(timestamp);
+      return formatTimestamp(d);
+    }
+
+    // ===== 초기화 =====
+    document.addEventListener('DOMContentLoaded', () => {
+      migrateData();
+      refreshEvalDropdowns();
+      updateTotalScore();
+      // 서버 URL이 설정되어 있으면 자동으로 학생 명단 동기화
+      autoSyncFromServer();
+    });
+
+    function autoSyncFromServer() {
+      var url = getEvalScriptUrl();
+      if (!url) return;
+      // 로컬에 학생 데이터가 비어있거나 details가 없으면 서버에서 자동 로드
+      var data = getData();
+      var hasSemesters = Object.keys(data.semesters).length > 0;
+      var hasDetails = false;
+      if (hasSemesters) {
+        // details 필드가 있는지 확인
+        var sems = Object.keys(data.semesters);
+        for (var i = 0; i < sems.length; i++) {
+          var schools = Object.keys(data.semesters[sems[i]]);
+          for (var j = 0; j < schools.length; j++) {
+            if (data.semesters[sems[i]][schools[j]].details) { hasDetails = true; break; }
+          }
+          if (hasDetails) break;
+        }
+      }
+      if (!hasSemesters || !hasDetails) {
+        fetch(url + '?action=getStudents')
+          .then(function(r) { return r.json(); })
+          .then(function(result) {
+            if (result.error || !result.semesters) return;
+            var d = getData();
+            d.semesters = result.semesters;
+            saveData(d);
+            refreshEvalDropdowns();
+          })
+          .catch(function() {});
+      }
+    }
+  </script>
+</body>
+</html>
