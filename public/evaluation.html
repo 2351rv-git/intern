@@ -100,41 +100,60 @@
       border-bottom: 1px solid #f0f0f0;
     }
     
-    .checklist { margin-bottom: 20px; }
-    .checklist-item {
+    .reference-list { margin-bottom: 20px; }
+    .reference-list p.reference-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a6cf7;
+      margin-bottom: 8px;
+    }
+    .reference-item {
       display: flex;
       align-items: center;
-      padding: 10px 12px;
+      padding: 8px 12px;
       border-radius: 6px;
-      margin-bottom: 6px;
-      transition: background 0.2s;
-      cursor: pointer;
-    }
-    .checklist-item:hover { background: #f8f9fa; }
-    .checklist-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-right: 12px;
-      accent-color: #4a6cf7;
-      cursor: pointer;
-    }
-    .checklist-item label {
-      font-size: 14px;
-      color: #34495e;
-      cursor: pointer;
-      flex: 1;
-    }
-    
-    .score-display {
+      margin-bottom: 4px;
       background: #f8f9fa;
-      padding: 12px 16px;
-      border-radius: 6px;
+    }
+    .reference-item::before {
+      content: '•';
+      color: #4a6cf7;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    .reference-item span {
+      font-size: 13px;
+      color: #34495e;
+    }
+    .score-select-wrap {
+      margin-top: 12px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
     }
-    .score-display .score-label { font-size: 13px; color: #7f8c8d; }
-    .score-display .score-value { font-size: 24px; font-weight: 700; color: #4a6cf7; }
+    .score-select-wrap label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+      white-space: nowrap;
+    }
+    .score-select-wrap select {
+      padding: 10px 14px;
+      border: 2px solid #4a6cf7;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #4a6cf7;
+      background: #f0f4ff;
+      cursor: pointer;
+      min-width: 80px;
+      transition: all 0.2s;
+    }
+    .score-select-wrap select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+    }
     
     .submit-area { margin-top: 24px; text-align: center; }
     .btn-submit {
@@ -397,31 +416,29 @@
         <div class="eval-section" data-section="1">
           <h3>1. 가치와 방향의 적합성</h3>
           <p class="section-desc">병원의 가치와 방향에 대한 공감여부와 이에 따른 실습 과정에서 참여의 적극성</p>
-          <div class="checklist">
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s1-c1" onchange="updateScore(1)">
-              <label for="s1-c1">실습 기관의 역할과 기능을 이해하고 있었다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s1-c2" onchange="updateScore(1)">
-              <label for="s1-c2">실습생으로서 자신의 역할과 한계를 인식하고 행동하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s1-c3" onchange="updateScore(1)">
-              <label for="s1-c3">기관의 운영 방식에 맞추어 성실하게 실습에 임하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s1-c4" onchange="updateScore(1)">
-              <label for="s1-c4">지시된 업무 외에도 배우려는 적극적인 태도를 보였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s1-c5" onchange="updateScore(1)">
-              <label for="s1-c5">실습 전반에 걸쳐 책임감 있게 행동하였다</label>
-            </div>
+          <div class="reference-list">
+            <p class="reference-title">📋 평가 참고 기준</p>
+            <div class="reference-item"><span>실습 기관의 역할과 기능을 이해하고 있었다</span></div>
+            <div class="reference-item"><span>실습생으로서 자신의 역할과 한계를 인식하고 행동하였다</span></div>
+            <div class="reference-item"><span>기관의 운영 방식에 맞추어 성실하게 실습에 임하였다</span></div>
+            <div class="reference-item"><span>지시된 업무 외에도 배우려는 적극적인 태도를 보였다</span></div>
+            <div class="reference-item"><span>실습 전반에 걸쳐 책임감 있게 행동하였다</span></div>
           </div>
-          <div class="score-display">
-            <span class="score-label">환산 점수</span>
-            <span class="score-value" id="score-1">0</span>
+          <div class="score-select-wrap">
+            <label for="score-select-1">점수 부여 <span class="required">*</span></label>
+            <select id="score-select-1" onchange="updateScore(1)">
+              <option value="0">-- 선택 --</option>
+              <option value="1">1점</option>
+              <option value="2">2점</option>
+              <option value="3">3점</option>
+              <option value="4">4점</option>
+              <option value="5">5점</option>
+              <option value="6">6점</option>
+              <option value="7">7점</option>
+              <option value="8">8점</option>
+              <option value="9">9점</option>
+              <option value="10">10점</option>
+            </select>
           </div>
         </div>
       </div>
@@ -431,31 +448,29 @@
         <div class="eval-section" data-section="2">
           <h3>2. 실습태도</h3>
           <p class="section-desc">용모단정 · 실습복장 · 실습준비 · 참여자 및 선생님 대응태도</p>
-          <div class="checklist">
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s2-c1" onchange="updateScore(2)">
-              <label for="s2-c1">실습 복장 및 용모가 단정하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s2-c2" onchange="updateScore(2)">
-              <label for="s2-c2">실습 전 필요한 준비를 스스로 하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s2-c3" onchange="updateScore(2)">
-              <label for="s2-c3">지각·무단이탈 없이 성실히 참여하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s2-c4" onchange="updateScore(2)">
-              <label for="s2-c4">지도자 및 선생님에게 예의 바르게 응대하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s2-c5" onchange="updateScore(2)">
-              <label for="s2-c5">피드백을 긍정적으로 수용하였다</label>
-            </div>
+          <div class="reference-list">
+            <p class="reference-title">📋 평가 참고 기준</p>
+            <div class="reference-item"><span>실습 복장 및 용모가 단정하였다</span></div>
+            <div class="reference-item"><span>실습 전 필요한 준비를 스스로 하였다</span></div>
+            <div class="reference-item"><span>지각·무단이탈 없이 성실히 참여하였다</span></div>
+            <div class="reference-item"><span>지도자 및 선생님에게 예의 바르게 응대하였다</span></div>
+            <div class="reference-item"><span>피드백을 긍정적으로 수용하였다</span></div>
           </div>
-          <div class="score-display">
-            <span class="score-label">환산 점수</span>
-            <span class="score-value" id="score-2">0</span>
+          <div class="score-select-wrap">
+            <label for="score-select-2">점수 부여 <span class="required">*</span></label>
+            <select id="score-select-2" onchange="updateScore(2)">
+              <option value="0">-- 선택 --</option>
+              <option value="1">1점</option>
+              <option value="2">2점</option>
+              <option value="3">3점</option>
+              <option value="4">4점</option>
+              <option value="5">5점</option>
+              <option value="6">6점</option>
+              <option value="7">7점</option>
+              <option value="8">8점</option>
+              <option value="9">9점</option>
+              <option value="10">10점</option>
+            </select>
           </div>
         </div>
       </div>
@@ -465,31 +480,29 @@
         <div class="eval-section" data-section="3">
           <h3>3. 규칙준수</h3>
           <p class="section-desc">근태관리 · 실습 주의사항 준수 · 과제 정시 제출</p>
-          <div class="checklist">
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s3-c1" onchange="updateScore(3)">
-              <label for="s3-c1">근태 규정을 정확히 준수하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s3-c2" onchange="updateScore(3)">
-              <label for="s3-c2">실습 중 안전·윤리·보안 규정을 지켰다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s3-c3" onchange="updateScore(3)">
-              <label for="s3-c3">주의사항 위반 사례가 없었다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s3-c4" onchange="updateScore(3)">
-              <label for="s3-c4">과제를 기한 내에 제출하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s3-c5" onchange="updateScore(3)">
-              <label for="s3-c5">규칙 미숙지 시 즉시 확인하고 수정하였다</label>
-            </div>
+          <div class="reference-list">
+            <p class="reference-title">📋 평가 참고 기준</p>
+            <div class="reference-item"><span>근태 규정을 정확히 준수하였다</span></div>
+            <div class="reference-item"><span>실습 중 안전·윤리·보안 규정을 지켰다</span></div>
+            <div class="reference-item"><span>주의사항 위반 사례가 없었다</span></div>
+            <div class="reference-item"><span>과제를 기한 내에 제출하였다</span></div>
+            <div class="reference-item"><span>규칙 미숙지 시 즉시 확인하고 수정하였다</span></div>
           </div>
-          <div class="score-display">
-            <span class="score-label">환산 점수</span>
-            <span class="score-value" id="score-3">0</span>
+          <div class="score-select-wrap">
+            <label for="score-select-3">점수 부여 <span class="required">*</span></label>
+            <select id="score-select-3" onchange="updateScore(3)">
+              <option value="0">-- 선택 --</option>
+              <option value="1">1점</option>
+              <option value="2">2점</option>
+              <option value="3">3점</option>
+              <option value="4">4점</option>
+              <option value="5">5점</option>
+              <option value="6">6점</option>
+              <option value="7">7점</option>
+              <option value="8">8점</option>
+              <option value="9">9점</option>
+              <option value="10">10점</option>
+            </select>
           </div>
         </div>
       </div>
@@ -499,31 +512,29 @@
         <div class="eval-section" data-section="4">
           <h3>4. 업무수행</h3>
           <p class="section-desc">실습과정에서 업무수행의 질</p>
-          <div class="checklist">
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s4-c1" onchange="updateScore(4)">
-              <label for="s4-c1">실습 업무의 목적을 이해하고 수행하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s4-c2" onchange="updateScore(4)">
-              <label for="s4-c2">지시 사항을 정확히 이해하고 실행하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s4-c3" onchange="updateScore(4)">
-              <label for="s4-c3">반복 설명 없이도 유사 업무를 수행하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s4-c4" onchange="updateScore(4)">
-              <label for="s4-c4">업무의 정확성과 속도가 적절하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s4-c5" onchange="updateScore(4)">
-              <label for="s4-c5">실수 발생 시 즉시 보고하고 개선하려 하였다</label>
-            </div>
+          <div class="reference-list">
+            <p class="reference-title">📋 평가 참고 기준</p>
+            <div class="reference-item"><span>실습 업무의 목적을 이해하고 수행하였다</span></div>
+            <div class="reference-item"><span>지시 사항을 정확히 이해하고 실행하였다</span></div>
+            <div class="reference-item"><span>반복 설명 없이도 유사 업무를 수행하였다</span></div>
+            <div class="reference-item"><span>업무의 정확성과 속도가 적절하였다</span></div>
+            <div class="reference-item"><span>실수 발생 시 즉시 보고하고 개선하려 하였다</span></div>
           </div>
-          <div class="score-display">
-            <span class="score-label">환산 점수</span>
-            <span class="score-value" id="score-4">0</span>
+          <div class="score-select-wrap">
+            <label for="score-select-4">점수 부여 <span class="required">*</span></label>
+            <select id="score-select-4" onchange="updateScore(4)">
+              <option value="0">-- 선택 --</option>
+              <option value="1">1점</option>
+              <option value="2">2점</option>
+              <option value="3">3점</option>
+              <option value="4">4점</option>
+              <option value="5">5점</option>
+              <option value="6">6점</option>
+              <option value="7">7점</option>
+              <option value="8">8점</option>
+              <option value="9">9점</option>
+              <option value="10">10점</option>
+            </select>
           </div>
         </div>
       </div>
@@ -533,31 +544,29 @@
         <div class="eval-section" data-section="5">
           <h3>5. 대인관계</h3>
           <p class="section-desc">치료사 · 동료 · 참여자 등과의 상호작용 능력 및 갈등유무</p>
-          <div class="checklist">
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s5-c1" onchange="updateScore(5)">
-              <label for="s5-c1">치료사 및 직원과 원활하게 소통하였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s5-c2" onchange="updateScore(5)">
-              <label for="s5-c2">동료 실습생과 협력적인 태도를 보였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s5-c3" onchange="updateScore(5)">
-              <label for="s5-c3">참여자에게 존중과 배려를 보였다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s5-c4" onchange="updateScore(5)">
-              <label for="s5-c4">갈등 상황에서 감정적으로 대응하지 않았다</label>
-            </div>
-            <div class="checklist-item" onclick="toggleCheck(this)">
-              <input type="checkbox" id="s5-c5" onchange="updateScore(5)">
-              <label for="s5-c5">실습 분위기에 긍정적인 영향을 주었다</label>
-            </div>
+          <div class="reference-list">
+            <p class="reference-title">📋 평가 참고 기준</p>
+            <div class="reference-item"><span>치료사 및 직원과 원활하게 소통하였다</span></div>
+            <div class="reference-item"><span>동료 실습생과 협력적인 태도를 보였다</span></div>
+            <div class="reference-item"><span>참여자에게 존중과 배려를 보였다</span></div>
+            <div class="reference-item"><span>갈등 상황에서 감정적으로 대응하지 않았다</span></div>
+            <div class="reference-item"><span>실습 분위기에 긍정적인 영향을 주었다</span></div>
           </div>
-          <div class="score-display">
-            <span class="score-label">환산 점수</span>
-            <span class="score-value" id="score-5">0</span>
+          <div class="score-select-wrap">
+            <label for="score-select-5">점수 부여 <span class="required">*</span></label>
+            <select id="score-select-5" onchange="updateScore(5)">
+              <option value="0">-- 선택 --</option>
+              <option value="1">1점</option>
+              <option value="2">2점</option>
+              <option value="3">3점</option>
+              <option value="4">4점</option>
+              <option value="5">5점</option>
+              <option value="6">6점</option>
+              <option value="7">7점</option>
+              <option value="8">8점</option>
+              <option value="9">9점</option>
+              <option value="10">10점</option>
+            </select>
           </div>
         </div>
       </div>
@@ -881,35 +890,15 @@
     }
 
     // ===== 점수 계산 =====
-    function calcScore(count) {
-      if (count >= 5) return 10;
-      if (count === 4) return 8;
-      if (count === 3) return 6;
-      if (count === 2) return 4;
-      if (count === 1) return 2;
-      return 0;
-    }
-
-    function toggleCheck(item) {
-      const checkbox = item.querySelector('input[type="checkbox"]');
-      if (event.target === checkbox || event.target.tagName === 'LABEL') return;
-      checkbox.checked = !checkbox.checked;
-      checkbox.dispatchEvent(new Event('change'));
-    }
-
     function updateScore(section) {
-      let count = 0;
-      for (let i = 1; i <= 5; i++) {
-        if (document.getElementById(`s${section}-c${i}`).checked) count++;
-      }
-      document.getElementById(`score-${section}`).textContent = calcScore(count);
+      var score = parseInt(document.getElementById('score-select-' + section).value) || 0;
       updateTotalScore();
     }
 
     function updateTotalScore() {
       let total = 0;
       for (let s = 1; s <= 5; s++) {
-        total += parseInt(document.getElementById(`score-${s}`).textContent);
+        total += parseInt(document.getElementById('score-select-' + s).value) || 0;
       }
       document.getElementById('total-score').textContent = total;
     }
@@ -942,12 +931,15 @@
       const scores = {};
       const checks = {};
       for (let s = 1; s <= 5; s++) {
-        scores[`section${s}`] = parseInt(document.getElementById(`score-${s}`).textContent);
-        const sChecks = [];
-        for (let i = 1; i <= 5; i++) {
-          sChecks.push(document.getElementById(`s${s}-c${i}`).checked);
+        scores[`section${s}`] = parseInt(document.getElementById('score-select-' + s).value) || 0;
+        checks[`section${s}`] = [];
+      }
+
+      // 점수 미선택 확인
+      for (let s = 1; s <= 5; s++) {
+        if (scores[`section${s}`] === 0) {
+          return showStatus('submit-status', '모든 항목의 점수를 선택해주세요.', 'error');
         }
-        checks[`section${s}`] = sChecks;
       }
 
       const result = {
@@ -1005,10 +997,7 @@
       document.getElementById('select-student').disabled = true;
       document.getElementById('select-student').innerHTML = '<option value="">-- 먼저 학교를 선택하세요 --</option>';
       for (let s = 1; s <= 5; s++) {
-        for (let i = 1; i <= 5; i++) {
-          document.getElementById(`s${s}-c${i}`).checked = false;
-        }
-        document.getElementById(`score-${s}`).textContent = '0';
+        document.getElementById('score-select-' + s).value = '0';
       }
       document.getElementById('total-score').textContent = '0';
     }
@@ -1515,13 +1504,12 @@
       });
       const count = results.length;
       for (let s = 1; s <= 5; s++) {
-        // 평균을 가장 가까운 유효 점수(2,4,6,8,10)로 반올림
+        // 평균을 내림하여 가장 가까운 유효 점수(2,4,6,8,10)로 매핑
         var avg = avgScores['section' + s] / count;
         var validScores = [2, 4, 6, 8, 10];
-        var closest = validScores.reduce(function(prev, curr) {
-          return Math.abs(curr - avg) < Math.abs(prev - avg) ? curr : prev;
-        });
-        avgScores['section' + s] = closest;
+        // 내림: 평균 이하인 유효 점수 중 가장 큰 값 선택
+        var floored = validScores.filter(function(v) { return v <= avg; });
+        avgScores['section' + s] = floored.length > 0 ? floored[floored.length - 1] : 2;
       }
       const totalScore = avgScores.section1 + avgScores.section2 + avgScores.section3 + avgScores.section4 + avgScores.section5;
 
