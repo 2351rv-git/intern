@@ -31,6 +31,12 @@ function handleEvalRequest(e) {
       case 'saveStudents':
         result = saveStudents(JSON.parse(e.postData.contents));
         break;
+      case 'getPassword':
+        result = getPassword();
+        break;
+      case 'savePassword':
+        result = savePassword(JSON.parse(e.postData.contents));
+        break;
       default:
         result = { error: 'Unknown action: ' + action };
     }
@@ -229,4 +235,45 @@ function getEvaluations() {
 function tryParseJSON(str) {
   try { return JSON.parse(str); }
   catch (e) { return []; }
+}
+
+// ===== 관리자 비밀번호 관리 (Settings 시트) =====
+
+function getPassword() {
+  const ss = SpreadsheetApp.openById(EVAL_SPREADSHEET_ID);
+  let sheet = ss.getSheetByName('Settings');
+  if (!sheet) return { password: '' };
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim() === 'adminPassword') {
+      return { password: String(data[i][1]).trim() };
+    }
+  }
+  return { password: '' };
+}
+
+function savePassword(data) {
+  const ss = SpreadsheetApp.openById(EVAL_SPREADSHEET_ID);
+  let sheet = ss.getSheetByName('Settings');
+  if (!sheet) {
+    sheet = ss.insertSheet('Settings');
+    sheet.getRange(1, 1, 1, 2).setValues([['key', 'value']]);
+    sheet.getRange(1, 1, 1, 2).setFontWeight('bold');
+  }
+
+  const values = sheet.getDataRange().getValues();
+  let found = false;
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][0]).trim() === 'adminPassword') {
+      sheet.getRange(i + 1, 2).setValue(data.password);
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    sheet.appendRow(['adminPassword', data.password]);
+  }
+
+  return { success: true, message: '비밀번호가 변경되었습니다.' };
 }
