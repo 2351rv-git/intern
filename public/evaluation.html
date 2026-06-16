@@ -1624,20 +1624,23 @@
       var scriptCode = 'var et='+total+';';
       scriptCode += 'function calcF(){var v=parseInt(document.getElementById("iv-score").value)||0;document.getElementById("final-score").value=et+v;}';
       scriptCode += 'function uc(el,id){if(el.checked)document.getElementById(id).checked=false;}';
-      scriptCode += 'function downloadHTML(){';
-      scriptCode += 'var clone=document.documentElement.cloneNode(true);';
-      scriptCode += 'var btns=clone.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].parentNode.removeChild(btns[i]);';
-      scriptCode += 'var blob=new Blob(["<!DOCTYPE html>"+clone.outerHTML],{type:"text/html;charset=utf-8"});';
-      scriptCode += 'var a=document.createElement("a");a.href=URL.createObjectURL(blob);';
-      scriptCode += 'a.download="실습평가서_' + (r.student||'보고서') + '.html";a.click();URL.revokeObjectURL(a.href);}';
+      scriptCode += 'function downloadPDF(){';
+      scriptCode += 'var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="none";';
+      scriptCode += 'var opt={margin:0.5,filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
+      scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";});}';
       scr.textContent = scriptCode;
       w.document.body.appendChild(scr);
+
+      // html2pdf 라이브러리 로드
+      var lib = w.document.createElement('script');
+      lib.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      w.document.head.appendChild(lib);
 
       // 버튼 컨테이너 삽입
       var btnDiv = w.document.createElement('div');
       btnDiv.className = 'no-print';
       btnDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:1000;display:flex;gap:8px;';
-      btnDiv.innerHTML = '<button onclick="window.print()" style="background:#4a6cf7;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">🖨️ 인쇄 / PDF</button><button onclick="downloadHTML()" style="background:#27ae60;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">📥 HTML 다운로드</button>';
+      btnDiv.innerHTML = '<button onclick="window.print()" style="background:#4a6cf7;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">🖨️ 인쇄</button><button onclick="downloadPDF()" style="background:#27ae60;color:#fff;border:none;padding:12px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">📥 PDF 다운로드</button>';
       w.document.body.insertBefore(btnDiv, w.document.body.firstChild);
     }
 
