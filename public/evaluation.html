@@ -757,7 +757,7 @@
       localStorage.setItem('evalAppData', JSON.stringify(data));
     }
     function getAdminPw() {
-      return localStorage.getItem('evalAdminPw') || DEFAULT_PW;
+      return window._serverAdminPw || localStorage.getItem('evalAdminPw') || DEFAULT_PW;
     }
     function getEvalScriptUrl() {
       return localStorage.getItem('evalScriptUrl') || DEFAULT_SCRIPT_URL;
@@ -1005,24 +1005,83 @@
     // ===== 관리자 =====
     function unlockAdmin() {
       const pw = document.getElementById('admin-pw').value;
-      if (pw === getAdminPw()) {
-        document.getElementById('admin-content').style.display = 'block';
-        document.getElementById('eval-script-url').value = getEvalScriptUrl();
-        refreshAdminSemesterSelects();
-        renderAdminStudentList();
-        refreshFilterDropdowns();
-        showStatus('admin-lock-status', '인증 성공!', 'success');
+      const url = getEvalScriptUrl();
+      
+      // 서버에서 비밀번호 확인 시도
+      if (url) {
+        showStatus('admin-lock-status', '인증 중...', 'info');
+        fetch(url + '?action=getPassword')
+          .then(function(r) { return r.json(); })
+          .then(function(result) {
+            var serverPw = result.password || '';
+            var validPw = serverPw || DEFAULT_PW;
+            window._serverAdminPw = validPw;
+            if (pw === validPw) {
+              document.getElementById('admin-content').style.display = 'block';
+              document.getElementById('eval-script-url').value = getEvalScriptUrl();
+              refreshAdminSemesterSelects();
+              renderAdminStudentList();
+              refreshFilterDropdowns();
+              showStatus('admin-lock-status', '인증 성공!', 'success');
+            } else {
+              showStatus('admin-lock-status', '비밀번호가 틀렸습니다.', 'error');
+            }
+          })
+          .catch(function() {
+            // 서버 연결 실패 시 로컬 비밀번호로 폴백
+            if (pw === getAdminPw()) {
+              document.getElementById('admin-content').style.display = 'block';
+              document.getElementById('eval-script-url').value = getEvalScriptUrl();
+              refreshAdminSemesterSelects();
+              renderAdminStudentList();
+              refreshFilterDropdowns();
+              showStatus('admin-lock-status', '인증 성공! (오프라인 모드)', 'success');
+            } else {
+              showStatus('admin-lock-status', '비밀번호가 틀렸습니다.', 'error');
+            }
+          });
       } else {
-        showStatus('admin-lock-status', '비밀번호가 틀렸습니다.', 'error');
+        // 서버 URL 미설정 시 로컬 비밀번호 사용
+        if (pw === getAdminPw()) {
+          document.getElementById('admin-content').style.display = 'block';
+          document.getElementById('eval-script-url').value = getEvalScriptUrl();
+          refreshAdminSemesterSelects();
+          renderAdminStudentList();
+          refreshFilterDropdowns();
+          showStatus('admin-lock-status', '인증 성공!', 'success');
+        } else {
+          showStatus('admin-lock-status', '비밀번호가 틀렸습니다.', 'error');
+        }
       }
     }
 
-    function changeAdminPw() {
+    async function changeAdminPw() {
       const newPw = document.getElementById('new-pw').value.trim();
       if (!newPw) return showStatus('admin-settings-status', '비밀번호를 입력하세요.', 'error');
-      localStorage.setItem('evalAdminPw', newPw);
-      document.getElementById('new-pw').value = '';
-      showStatus('admin-settings-status', '비밀번호가 변경되었습니다.', 'success');
+      
+      const url = getEvalScriptUrl();
+      if (url) {
+        showStatus('admin-settings-status', '비밀번호 변경 중...', 'info');
+        try {
+          const response = await fetch(url + '?action=savePassword', {
+            method: 'POST',
+            body: JSON.stringify({ password: newPw }),
+            headers: { 'Content-Type': 'text/plain' }
+          });
+          const result = await response.json();
+          if (result.error) throw new Error(result.error);
+          window._serverAdminPw = newPw;
+          localStorage.setItem('evalAdminPw', newPw);
+          document.getElementById('new-pw').value = '';
+          showStatus('admin-settings-status', '비밀번호가 변경되었습니다. (모든 기기에 적용)', 'success');
+        } catch (e) {
+          showStatus('admin-settings-status', '서버 저장 실패: ' + e.message, 'error');
+        }
+      } else {
+        localStorage.setItem('evalAdminPw', newPw);
+        document.getElementById('new-pw').value = '';
+        showStatus('admin-settings-status', '비밀번호 변경됨 (로컬만 적용, 서버 URL을 설정하면 전체 적용 가능)', 'error');
+      }
     }
 
     function saveEvalSettings() {
