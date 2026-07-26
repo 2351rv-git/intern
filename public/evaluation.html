@@ -1731,11 +1731,12 @@
       scriptCode += 'var STORAGE_KEY="' + storageKey.replace(/"/g, '\\"') + '";';
       scriptCode += 'function calcF(){var v=parseInt(document.getElementById("iv-score").value)||0;document.getElementById("final-score").value=et+v;autoSave();}';
       scriptCode += 'function uc(el,id){if(el.checked)document.getElementById(id).checked=false;}';
-      scriptCode += 'function autoSave(){try{var d={opinion:document.getElementById("interview-opinion").value,score:document.getElementById("iv-score").value,savedAt:new Date().toISOString()};localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){}}';
-      scriptCode += 'function loadSaved(){try{var s=localStorage.getItem(STORAGE_KEY);if(!s)return;var d=JSON.parse(s);if(d.opinion||d.score){var msg="이전에 임시 저장된 면담 내용이 있습니다.\\n복원하시겠습니까?";if(confirm(msg)){if(d.opinion)document.getElementById("interview-opinion").value=d.opinion;if(d.score){document.getElementById("iv-score").value=d.score;calcF();}}}}catch(e){}}';
-      scriptCode += 'function clearSaved(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}';
+      scriptCode += 'function autoSave(){try{if(window.opener&&window.opener._reportSave){window.opener._reportSave(STORAGE_KEY,document.getElementById("interview-opinion").value,document.getElementById("iv-score").value);}}catch(e){}}';
+      scriptCode += 'function loadSaved(){try{if(window.opener&&window.opener._reportLoad){var d=window.opener._reportLoad(STORAGE_KEY);if(d&&(d.opinion||d.score)){var msg="이전에 임시 저장된 면담 내용이 있습니다.\\n복원하시겠습니까?";if(confirm(msg)){if(d.opinion)document.getElementById("interview-opinion").value=d.opinion;if(d.score){document.getElementById("iv-score").value=d.score;calcF();}}}}}catch(e){}}';
+      scriptCode += 'function clearSaved(){try{if(window.opener&&window.opener._reportClear){window.opener._reportClear(STORAGE_KEY);}}catch(e){}}';
       scriptCode += 'document.getElementById("interview-opinion").addEventListener("input",autoSave);';
-      scriptCode += 'window.addEventListener("load",function(){setTimeout(loadSaved,300);});';
+      scriptCode += 'document.getElementById("iv-score").addEventListener("input",autoSave);';
+      scriptCode += 'setTimeout(loadSaved,300);';
       scriptCode += 'function downloadPDF(){';
       scriptCode += 'var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="none";';
       scriptCode += 'var opt={margin:0.5,filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
@@ -1795,6 +1796,24 @@
       // 서버 URL이 설정되어 있으면 자동으로 학생 명단 동기화
       autoSyncFromServer();
     });
+
+    // ===== 보고서 임시저장 헬퍼 (자식 창에서 호출) =====
+    window._reportSave = function(key, opinion, score) {
+      try {
+        var d = { opinion: opinion, score: score, savedAt: new Date().toISOString() };
+        localStorage.setItem(key, JSON.stringify(d));
+      } catch(e) {}
+    };
+    window._reportLoad = function(key) {
+      try {
+        var s = localStorage.getItem(key);
+        if (!s) return null;
+        return JSON.parse(s);
+      } catch(e) { return null; }
+    };
+    window._reportClear = function(key) {
+      try { localStorage.removeItem(key); } catch(e) {}
+    };
 
     function autoSyncFromServer() {
       var url = getEvalScriptUrl();
