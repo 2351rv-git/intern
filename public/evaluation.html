@@ -1608,6 +1608,50 @@
         }
       }
 
+      // 연락처가 로컬에 없으면 서버에서 최신 데이터를 가져와서 재시도
+      if (!contact) {
+        var url = getEvalScriptUrl();
+        if (url) {
+          fetch(url + '?action=getStudents')
+            .then(function(resp) { return resp.json(); })
+            .then(function(result) {
+              if (result.semesters) {
+                var d = getData();
+                d.semesters = result.semesters;
+                saveData(d);
+                // 연락처 다시 확인
+                if (result.semesters[r.semester] && result.semesters[r.semester][r.school]) {
+                  var sd = result.semesters[r.semester][r.school];
+                  if (sd.details && sd.details[r.student] && sd.details[r.student].contact) {
+                    // 연락처를 찾았으면 다시 보고서 열기
+                    openReportWindowDirect(r, sd.details[r.student].gender || gender, sd.details[r.student].period || period, sd.details[r.student].contact);
+                    return;
+                  }
+                }
+              }
+              // 서버에서도 못 찾으면 빈칸으로 그냥 열기
+              openReportWindowDirect(r, gender, period, contact);
+            })
+            .catch(function() {
+              openReportWindowDirect(r, gender, period, contact);
+            });
+          return; // 비동기 처리 중이므로 여기서 종료
+        }
+      }
+
+      openReportWindowDirect(r, gender, period, contact);
+    }
+
+    function openReportWindowDirect(r, gender, period, contact) {
+      var scores = r.scores || {};
+      var s1 = scores.section1 || 0;
+      var s2 = scores.section2 || 0;
+      var s3 = scores.section3 || 0;
+      var s4 = scores.section4 || 0;
+      var s5 = scores.section5 || 0;
+      var total = r.totalScore || (s1+s2+s3+s4+s5);
+      function sc(score, target) { return score === target ? '✔' : ''; }
+
       var h = '';
       h += '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">';
       h += '<title>실습 평가서</title><style>';
@@ -1667,7 +1711,7 @@
       h += '<td class="sc">'+sc(s5,2)+'</td><td class="sc">'+sc(s5,4)+'</td><td class="sc">'+sc(s5,6)+'</td><td class="sc">'+sc(s5,8)+'</td><td class="sc">'+sc(s5,10)+'</td></tr>';
       h += '<tr class="tr"><td colspan="2">총점</td><td colspan="5" style="text-align:right;padding-right:16px;font-size:16px;">'+total+' /50</td></tr>';
       h += '</table>';
-      h += '<table class="ivt"><tr><th>팀장 면담<br>의견</th><td class="ia"><textarea placeholder="면담 의견을 입력하세요"></textarea></td></tr>';
+      h += '<table class="ivt"><tr><th>팀장 면담<br>의견</th><td class="ia"><textarea id="interview-opinion" placeholder="면담 의견을 입력하세요"></textarea></td></tr>';
       h += '<tr><th>면담 점수</th><td class="si"><input type="text" id="iv-score" oninput="calcF()"> /50</td></tr></table>';
       h += '<table class="ft"><tr><td class="fl">최종점수</td><td class="fv"><input type="text" id="final-score" value="" readonly> /100</td></tr>';
       h += '<tr><td class="rl">추천여부</td><td class="rc">';
@@ -1682,13 +1726,20 @@
       w.document.write(h);
       w.document.close();
       var scr = w.document.createElement('script');
+      var storageKey = 'evalReport_' + (r.student||'') + '_' + (r.semester||'');
       var scriptCode = 'var et='+total+';';
-      scriptCode += 'function calcF(){var v=parseInt(document.getElementById("iv-score").value)||0;document.getElementById("final-score").value=et+v;}';
+      scriptCode += 'var STORAGE_KEY="' + storageKey.replace(/"/g, '\\"') + '";';
+      scriptCode += 'function calcF(){var v=parseInt(document.getElementById("iv-score").value)||0;document.getElementById("final-score").value=et+v;autoSave();}';
       scriptCode += 'function uc(el,id){if(el.checked)document.getElementById(id).checked=false;}';
+      scriptCode += 'function autoSave(){try{var d={opinion:document.getElementById("interview-opinion").value,score:document.getElementById("iv-score").value,savedAt:new Date().toISOString()};localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){}}';
+      scriptCode += 'function loadSaved(){try{var s=localStorage.getItem(STORAGE_KEY);if(!s)return;var d=JSON.parse(s);if(d.opinion||d.score){var msg="이전에 임시 저장된 면담 내용이 있습니다.\\n복원하시겠습니까?";if(confirm(msg)){if(d.opinion)document.getElementById("interview-opinion").value=d.opinion;if(d.score){document.getElementById("iv-score").value=d.score;calcF();}}}}catch(e){}}';
+      scriptCode += 'function clearSaved(){try{localStorage.removeItem(STORAGE_KEY);}catch(e){}}';
+      scriptCode += 'document.getElementById("interview-opinion").addEventListener("input",autoSave);';
+      scriptCode += 'window.addEventListener("load",function(){setTimeout(loadSaved,300);});';
       scriptCode += 'function downloadPDF(){';
       scriptCode += 'var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="none";';
       scriptCode += 'var opt={margin:0.5,filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
-      scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";});}';
+      scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";clearSaved();});}';
       scr.textContent = scriptCode;
       w.document.body.appendChild(scr);
 
@@ -1748,33 +1799,17 @@
     function autoSyncFromServer() {
       var url = getEvalScriptUrl();
       if (!url) return;
-      // 로컬에 학생 데이터가 비어있거나 details가 없으면 서버에서 자동 로드
-      var data = getData();
-      var hasSemesters = Object.keys(data.semesters).length > 0;
-      var hasDetails = false;
-      if (hasSemesters) {
-        // details 필드가 있는지 확인
-        var sems = Object.keys(data.semesters);
-        for (var i = 0; i < sems.length; i++) {
-          var schools = Object.keys(data.semesters[sems[i]]);
-          for (var j = 0; j < schools.length; j++) {
-            if (data.semesters[sems[i]][schools[j]].details) { hasDetails = true; break; }
-          }
-          if (hasDetails) break;
-        }
-      }
-      if (!hasSemesters || !hasDetails) {
-        fetch(url + '?action=getStudents')
-          .then(function(r) { return r.json(); })
-          .then(function(result) {
-            if (result.error || !result.semesters) return;
-            var d = getData();
-            d.semesters = result.semesters;
-            saveData(d);
-            refreshEvalDropdowns();
-          })
-          .catch(function() {});
-      }
+      // 항상 서버에서 최신 학생 데이터를 로드 (연락처 등 상세정보 포함)
+      fetch(url + '?action=getStudents')
+        .then(function(r) { return r.json(); })
+        .then(function(result) {
+          if (result.error || !result.semesters) return;
+          var d = getData();
+          d.semesters = result.semesters;
+          saveData(d);
+          refreshEvalDropdowns();
+        })
+        .catch(function() {});
     }
   </script>
 </body>
