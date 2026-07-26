@@ -109,15 +109,17 @@ function getStudents() {
         semesters[currentSemester][currentSchool].students.push(student);
       }
 
-      // 학생별 상세정보 저장 (성별, 기간)
+      // 학생별 상세정보 저장 (성별, 기간, 연락처)
       if (student) {
         if (!semesters[currentSemester][currentSchool].details) {
           semesters[currentSemester][currentSchool].details = {};
         }
         const gender = String(data[i][4] || '').trim();
+        const contact = String(data[i][8] || '').trim(); // I열: 연락처
         semesters[currentSemester][currentSchool].details[student] = {
           gender: gender,
-          period: currentPeriod
+          period: currentPeriod,
+          contact: contact
         };
       }
     }
