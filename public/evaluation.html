@@ -1739,8 +1739,9 @@
       scriptCode += 'setTimeout(loadSaved,300);';
       scriptCode += 'function downloadPDF(){';
       scriptCode += 'var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="none";';
+      scriptCode += 'var ta=document.getElementById("interview-opinion");var taVal=ta.value;var div=document.createElement("div");div.style.cssText="width:100%;min-height:130px;font-family:inherit;font-size:12px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;";div.textContent=taVal;ta.parentNode.replaceChild(div,ta);';
       scriptCode += 'var opt={margin:0.5,filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
-      scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";clearSaved();});}';
+      scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){div.parentNode.replaceChild(ta,div);ta.value=taVal;var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";clearSaved();});}';
       scr.textContent = scriptCode;
       w.document.body.appendChild(scr);
 
