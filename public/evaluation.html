@@ -581,6 +581,7 @@
       <!-- 제출 -->
       <div class="submit-area">
         <button class="btn-submit" id="btn-submit" onclick="submitEvaluation()">평가 제출</button>
+        <button class="btn-submit" id="btn-temp-save" onclick="tempSaveEvaluation()" style="background:#f39c12; margin-left:8px;">임시 저장</button>
         <div class="status-msg" id="submit-status"></div>
       </div>
     </div>
@@ -1000,6 +1001,76 @@
         document.getElementById('score-select-' + s).value = '0';
       }
       document.getElementById('total-score').textContent = '0';
+      // 제출 완료 시 임시저장 데이터 삭제
+      localStorage.removeItem('evalTempSave');
+    }
+
+    // ===== 임시저장 기능 =====
+    function tempSaveEvaluation() {
+      const tempData = {
+        evaluator: document.getElementById('evaluator-name').value.trim(),
+        semester: document.getElementById('select-semester').value,
+        school: document.getElementById('select-school').value,
+        student: document.getElementById('select-student').value,
+        comment: document.getElementById('weekly-comment').value.trim(),
+        scores: {},
+        savedAt: new Date().toISOString()
+      };
+      for (let s = 1; s <= 5; s++) {
+        tempData.scores['section' + s] = document.getElementById('score-select-' + s).value;
+      }
+      localStorage.setItem('evalTempSave', JSON.stringify(tempData));
+      showStatus('submit-status', '임시 저장되었습니다. (' + formatTimestamp(new Date()) + ')', 'success');
+    }
+
+    function loadTempSave() {
+      const saved = localStorage.getItem('evalTempSave');
+      if (!saved) return;
+      const tempData = JSON.parse(saved);
+
+      const savedTime = tempData.savedAt ? formatDisplayDate(tempData.savedAt) : '';
+      const studentInfo = tempData.student ? (' - ' + tempData.student) : '';
+      if (!confirm('이전에 임시 저장된 데이터가 있습니다.' + studentInfo + '\n(' + savedTime + ')\n\n복원하시겠습니까?')) {
+        return;
+      }
+
+      if (tempData.evaluator) {
+        document.getElementById('evaluator-name').value = tempData.evaluator;
+      }
+
+      if (tempData.semester) {
+        document.getElementById('select-semester').value = tempData.semester;
+        onSemesterChange();
+
+        setTimeout(function() {
+          if (tempData.school) {
+            document.getElementById('select-school').value = tempData.school;
+            onSchoolChange();
+
+            setTimeout(function() {
+              if (tempData.student) {
+                document.getElementById('select-student').value = tempData.student;
+              }
+            }, 50);
+          }
+        }, 50);
+      }
+
+      for (let s = 1; s <= 5; s++) {
+        const val = tempData.scores && tempData.scores['section' + s];
+        if (val) {
+          document.getElementById('score-select-' + s).value = val;
+        }
+      }
+      updateTotalScore();
+
+      if (tempData.comment) {
+        setTimeout(function() {
+          document.getElementById('weekly-comment').value = tempData.comment;
+        }, 100);
+      }
+
+      showStatus('submit-status', '임시 저장된 데이터가 복원되었습니다.', 'info');
     }
 
     // ===== 관리자 =====
@@ -1594,15 +1665,17 @@
       var total = r.totalScore || (s1+s2+s3+s4+s5);
       function sc(score, target) { return score === target ? '✔' : ''; }
 
-      // 스프레드시트에서 성별(E열)과 기간(B열) 가져오기
+      // 스프레드시트에서 성별(E열), 기간(B열), 연락처(I열) 가져오기
       var gender = '';
       var period = '';
+      var contact = '';
       var data = getData();
       if (r.semester && r.school && r.student && data.semesters[r.semester] && data.semesters[r.semester][r.school]) {
         var schoolData = data.semesters[r.semester][r.school];
         if (schoolData.details && schoolData.details[r.student]) {
           gender = schoolData.details[r.student].gender || '';
           period = schoolData.details[r.student].period || '';
+          contact = schoolData.details[r.student].contact || '';
         }
       }
 
@@ -1627,7 +1700,8 @@
       h += '.et .tr td{font-weight:bold;font-size:13px;padding:8px}';
       h += '.ivt{margin-top:12px}.ivt th{background:#f0f0f0;font-weight:bold;width:14%;padding:8px 6px;vertical-align:middle}';
       h += '.ivt .ia{height:155px;vertical-align:top;text-align:left;padding:8px}';
-      h += '.ivt .ia textarea{width:100%;height:140px;border:none;outline:none;resize:none;font-family:inherit;font-size:12px;line-height:1.5;background:transparent}';
+      h += '.interview-content{white-space:pre-wrap!important;word-wrap:break-word!important;overflow-wrap:break-word!important}';
+      h += '.interview-content:empty:before{content:attr(data-placeholder);color:#999}';
       h += '.ivt .si{text-align:right;padding-right:12px;height:45px}';
       h += '.ivt .si input{width:50px;border:none;border-bottom:1px solid #999;text-align:right;font-size:16px;font-weight:bold;font-family:inherit;outline:none;background:transparent}';
       h += '.ft{margin-top:12px}.ft td,.ft th{padding:12px 8px}';
@@ -1649,7 +1723,7 @@
       h += '<td><input type="text" value="' + gender + '"></td>';
       h += '<td><input type="text" value="' + (r.school||'') + '"></td>';
       h += '<td><input type="text" value="' + period + '"></td>';
-      h += '<td><input type="text" value=""></td></tr></table>';
+      h += '<td><input type="text" value="' + contact + '"></td></tr></table>';
       h += '<table class="et">';
       h += '<tr class="hr"><th colspan="2" rowspan="2">평 가 항 목</th><th colspan="5">평 가 점 수</th></tr>';
       h += '<tr class="sh"><th>2</th><th>4</th><th>6</th><th>8</th><th>10</th></tr>';
@@ -1665,7 +1739,7 @@
       h += '<td class="sc">'+sc(s5,2)+'</td><td class="sc">'+sc(s5,4)+'</td><td class="sc">'+sc(s5,6)+'</td><td class="sc">'+sc(s5,8)+'</td><td class="sc">'+sc(s5,10)+'</td></tr>';
       h += '<tr class="tr"><td colspan="2">총점</td><td colspan="5" style="text-align:right;padding-right:16px;font-size:16px;">'+total+' /50</td></tr>';
       h += '</table>';
-      h += '<table class="ivt"><tr><th>팀장 면담<br>의견</th><td class="ia"><textarea placeholder="면담 의견을 입력하세요"></textarea></td></tr>';
+      h += '<table class="ivt"><tr><th>팀장 면담<br>의견</th><td class="ia"><div contenteditable="true" class="interview-content" id="interview-opinion" style="width:100%;min-height:130px;outline:none;font-family:inherit;font-size:12px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;" data-placeholder="면담 의견을 입력하세요"></div></td></tr>';
       h += '<tr><th>면담 점수</th><td class="si"><input type="text" id="iv-score" oninput="calcF()"> /50</td></tr></table>';
       h += '<table class="ft"><tr><td class="fl">최종점수</td><td class="fv"><input type="text" id="final-score" value="" readonly> /100</td></tr>';
       h += '<tr><td class="rl">추천여부</td><td class="rc">';
@@ -1685,7 +1759,8 @@
       scriptCode += 'function uc(el,id){if(el.checked)document.getElementById(id).checked=false;}';
       scriptCode += 'function downloadPDF(){';
       scriptCode += 'var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="none";';
-      scriptCode += 'var opt={margin:0.5,filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
+      scriptCode += 'var el=document.getElementById("interview-opinion");if(el){el.style.whiteSpace="pre-wrap";el.style.wordWrap="break-word";el.style.overflowWrap="break-word";}';
+      scriptCode += 'var opt={margin:[0.4,0.5,0.4,0.5],filename:"실습평가서_' + (r.student||'보고서') + '.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true,letterRendering:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}};';
       scriptCode += 'html2pdf().set(opt).from(document.body).save().then(function(){var btns=document.querySelectorAll(".no-print");for(var i=0;i<btns.length;i++)btns[i].style.display="";});}';
       scr.textContent = scriptCode;
       w.document.body.appendChild(scr);
@@ -1741,6 +1816,8 @@
       updateTotalScore();
       // 서버 URL이 설정되어 있으면 자동으로 학생 명단 동기화
       autoSyncFromServer();
+      // 임시저장 데이터 복원 확인
+      setTimeout(function() { loadTempSave(); }, 500);
     });
 
     function autoSyncFromServer() {
