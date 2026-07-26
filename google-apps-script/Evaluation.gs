@@ -62,10 +62,13 @@ function getStudents() {
 
   sheets.forEach(sheet => {
     const sheetName = sheet.getName();
-    // Evaluations, WebApp 시트는 건너뛰기
-    if (sheetName === 'Evaluations' || sheetName === 'WebApp') return;
+    // Evaluations, WebApp, Settings 시트는 건너뛰기
+    if (sheetName === 'Evaluations' || sheetName === 'WebApp' || sheetName === 'Settings') return;
 
-    const data = sheet.getDataRange().getValues();
+    // I열(9번째)까지 확실히 읽히도록 보장
+    const lastRow = sheet.getLastRow();
+    const lastCol = Math.max(sheet.getLastColumn(), 9); // 최소 I열까지
+    const data = lastRow > 0 ? sheet.getRange(1, 1, lastRow, lastCol).getValues() : [];
     if (data.length <= 1) return;
 
     let currentSemester = '';
